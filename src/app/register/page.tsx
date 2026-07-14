@@ -11,7 +11,7 @@ const RegisterForm = dynamic(() => import("@/components/auth/RegisterForm"), {
 
 export default function RegisterPage() {
   return (
-    <AuthLayout illustration="/assets/images/registration.png">
+    <AuthLayout illustration="/assets/images/registration.png" classIllustration="">
       <RegisterForm />
     </AuthLayout>
   );

@@ -125,7 +125,11 @@ export default function Navbar() {
 
           {profileOpen && (
             <div className="absolute right-0 top-full mt-2 w-[280px] rounded-sm bg-[var(--card-bg)] p-4 shadow-[var(--dropdown-shadow)]">
-              <div className="mb-3 flex items-center gap-3 border-b border-border-input pb-3">
+              <Link
+                href="/profile"
+                onClick={() => setProfileOpen(false)}
+                className="mb-3 flex items-center gap-3 border-b border-border-input pb-3"
+              >
                 <div className="h-10 w-10 overflow-hidden rounded-full">
                   <Image
                     src={user?.avatarUrl || "/assets/images/profile.png"}
@@ -139,7 +143,7 @@ export default function Navbar() {
                   <h4 className="text-sm font-medium text-text-heading">{displayName}</h4>
                   <p className="text-xs text-primary">View Profile</p>
                 </div>
-              </div>
+              </Link>
               <ul className="space-y-1">
                 <li>
                   <button className="flex w-full items-center gap-3 rounded px-2 py-2 text-sm text-text-muted transition-colors hover:bg-surface-input">

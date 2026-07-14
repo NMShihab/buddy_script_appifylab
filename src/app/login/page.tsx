@@ -11,7 +11,7 @@ const LoginForm = dynamic(() => import("@/components/auth/LoginForm"), {
 
 export default function LoginPage() {
   return (
-    <AuthLayout illustration="/assets/images/login.png">
+    <AuthLayout illustration="/assets/images/login.png" classIllustration="max-w-[633px] ">
       <LoginForm />
     </AuthLayout>
   );
