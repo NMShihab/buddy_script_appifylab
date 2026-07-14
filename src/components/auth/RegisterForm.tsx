@@ -10,23 +10,46 @@ import OrDivider from "@/components/ui/OrDivider";
 import FormCheckbox from "@/components/ui/FormCheckbox";
 import ErrorAlert from "@/components/ui/ErrorAlert";
 
-export default function LoginForm() {
-  const { login } = useAuth();
+export default function RegisterForm() {
+  const { register } = useAuth();
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [remember, setRemember] = useState(true);
+  const [repeatPassword, setRepeatPassword] = useState("");
+  const [agreeTerms, setAgreeTerms] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
-    setLoading(true);
 
+    if (!firstName.trim() || !lastName.trim()) {
+      setError("First name and last name are required");
+      return;
+    }
+
+    if (password.length < 6) {
+      setError("Password must be at least 6 characters");
+      return;
+    }
+
+    if (password !== repeatPassword) {
+      setError("Passwords do not match");
+      return;
+    }
+
+    if (!agreeTerms) {
+      setError("You must agree to the terms & conditions");
+      return;
+    }
+
+    setLoading(true);
     try {
-      await login(email, password);
+      await register({ firstName, lastName, email, password });
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Login failed");
+      setError(err instanceof Error ? err.message : "Registration failed");
     } finally {
       setLoading(false);
     }
@@ -34,24 +57,20 @@ export default function LoginForm() {
 
   return (
     <>
-      {/* _mar_b8 */}
       <p className="mb-2 text-center text-base font-normal leading-[1.4] text-text-body dark:text-white">
-        Welcome back
+        Get Started Now
       </p>
-      {/* _titl4 _mar_b50 → font-size:28px, mb:50px */}
       <h4 className="mb-[50px] text-center text-[28px] font-medium leading-[1.2] text-text-heading dark:text-white max-[575px]:text-[22px]">
-        Login to your account
+        Registration
       </h4>
 
-      {/* _mar_b40 */}
       <div className="mb-10">
         <SocialButton
           icon="/assets/images/google.svg"
-          label="Or sign-in with google"
+          label="Register with google"
         />
       </div>
 
-      {/* _mar_b40 */}
       <div className="mb-10">
         <OrDivider />
       </div>
@@ -59,6 +78,23 @@ export default function LoginForm() {
       <ErrorAlert message={error} />
 
       <form onSubmit={handleSubmit}>
+        <div className="grid grid-cols-2 gap-3">
+          <FormInput
+            label="First Name"
+            type="text"
+            value={firstName}
+            onChange={setFirstName}
+            required
+          />
+          <FormInput
+            label="Last Name"
+            type="text"
+            value={lastName}
+            onChange={setLastName}
+            required
+          />
+        </div>
+
         <FormInput
           label="Email"
           type="email"
@@ -75,33 +111,33 @@ export default function LoginForm() {
           required
         />
 
-        {/* Remember me row + Forgot password */}
-        <div className="flex items-center justify-between max-md:flex-col max-md:gap-2">
-          <FormCheckbox
-            id="remember"
-            label="Remember me"
-            checked={remember}
-            onChange={setRemember}
-          />
-          <p className="cursor-pointer text-sm leading-[1.4] text-primary max-[575px]:ml-2 max-[575px]:text-xs md:ml-[23px]">
-            Forgot password?
-          </p>
-        </div>
+        <FormInput
+          label="Repeat Password"
+          type="password"
+          value={repeatPassword}
+          onChange={setRepeatPassword}
+          required
+        />
 
-        {/* _mar_t40 _mar_b60 */}
+        <FormCheckbox
+          id="terms"
+          label="I agree to terms & conditions"
+          checked={agreeTerms}
+          onChange={setAgreeTerms}
+        />
+
         <div className="mb-[60px] mt-10">
           <PrimaryButton type="submit" disabled={loading}>
-            {loading ? "Logging in..." : "Login now"}
+            {loading ? "Creating account..." : "Register now"}
           </PrimaryButton>
         </div>
       </form>
 
-      {/* Bottom link — font-size:14px */}
       <div className="text-center">
         <p className="text-sm text-text-light dark:text-white/70">
-          Don&apos;t have an account?{" "}
-          <Link href="/register" className="text-primary hover:underline">
-            Create New Account
+          Already have an account?{" "}
+          <Link href="/login" className="text-primary hover:underline">
+            Login
           </Link>
         </p>
       </div>

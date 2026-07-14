@@ -1,7 +1,21 @@
+"use client";
+
+import dynamic from "next/dynamic";
+
+const AuthLayout = dynamic(() => import("@/components/layout/AuthLayout"), {
+  ssr: false,
+});
+const RegisterForm = dynamic(() => import("@/components/auth/RegisterForm"), {
+  ssr: false,
+});
+
 export default function RegisterPage() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-[var(--page-bg)]">
-      <p className="text-[var(--text-secondary)]">Register page — UI coming in Step 5</p>
-    </div>
+    <AuthLayout
+      illustration="/assets/images/registration.png"
+      darkIllustration="/assets/images/registration1.png"
+    >
+      <RegisterForm />
+    </AuthLayout>
   );
 }

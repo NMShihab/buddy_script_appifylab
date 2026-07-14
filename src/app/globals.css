@@ -1,64 +1,96 @@
 @import "tailwindcss";
 
+/*
+ * Design System Token Map
+ * Source: common.css :root variables
+ *
+ * Original var    → Tailwind theme token         → Usage
+ * --color         → --color-text-body (#2D3748)   → text-text-body
+ * --color1        → --color-text-heading (#1A202C)→ text-text-heading
+ * --color2        → --color-text-brown (#312000)  → text-text-brown
+ * --color3        → --color-text-gray (#C4C4C4)   → text-text-gray
+ * --color4        → --color-text-label (#4A5568)   → text-text-label
+ * --color5        → --color-primary (#1890FF)      → bg-primary, text-primary, border-primary
+ * --color6        → --color-text-dark (#212121)    → text-text-dark
+ * --color7        → --color-text-muted (#666666)   → text-text-muted
+ * --color8        → --color-accent (#0ACF83)       → bg-accent, text-accent
+ * --color9        → --color-primary-light (#e8f4ff) → bg-primary-light
+ * --bg1           → --color-surface-page (#F0F2F5) → bg-surface-page
+ * --bg2           → --color-surface-card (#FFFFFF) → bg-surface-card
+ * --bg3           → --color-surface-input (#F5F5F5)→ bg-surface-input
+ * --bg4           → --color-border-light (#DFDFDF) → border-border-light
+ * --bg5           → --color-dark-primary (#112032) → bg-dark-primary
+ * --bg6           → --color-dark-secondary (#232E42) → bg-dark-secondary
+ * --bcolor1       → --color-border-page (#F0F2F5)  → border-border-page
+ * --bcolor2       → --color-border-input (#F5F5F5) → border-border-input
+ */
+
 @theme inline {
+  /* Font */
+  --font-sans: 'Poppins', sans-serif;
+
+  /* Primary & Accent */
   --color-primary: #1890FF;
   --color-primary-hover: #1478d4;
+  --color-primary-light: #e8f4ff;
   --color-accent: #0ACF83;
 
-  --color-text-dark: #2D3748;
-  --color-text-darker: #1A202C;
+  /* Text palette */
+  --color-text-body: #2D3748;
+  --color-text-heading: #1A202C;
   --color-text-brown: #312000;
   --color-text-gray: #C4C4C4;
-  --color-text-muted: #4A5568;
-  --color-text-black: #212121;
-  --color-text-secondary: #666666;
+  --color-text-label: #4A5568;
+  --color-text-dark: #212121;
+  --color-text-muted: #666666;
   --color-text-light: #767676;
 
-  --color-bg-page: #F0F2F5;
-  --color-bg-card: #FFFFFF;
-  --color-bg-input: #F5F5F5;
-  --color-bg-divider: #DFDFDF;
-  --color-bg-dark-primary: #112032;
-  --color-bg-dark-secondary: #232E42;
-  --color-bg-primary-light: #e8f4ff;
+  /* Surface (backgrounds) */
+  --color-surface-page: #F0F2F5;
+  --color-surface-card: #FFFFFF;
+  --color-surface-input: #F5F5F5;
 
+  /* Dark surfaces */
+  --color-dark-primary: #112032;
+  --color-dark-secondary: #232E42;
+
+  /* Borders */
+  --color-border-page: #F0F2F5;
+  --color-border-input: #F5F5F5;
+  --color-border-light: #DFDFDF;
+
+  /* Shadows */
   --shadow-card: 0px 2px 4px rgba(0, 0, 0, 0.08);
   --shadow-dropdown: 0px 8px 24px rgba(149, 157, 165, 0.2);
-  --shadow-dark-dropdown: 0px 5px 15px rgba(0, 0, 0, 0.35);
+  --shadow-hover: 0px 8px 24px rgba(149, 157, 165, 0.2);
 
-  --radius-sm: 5px;
+  /* Radii */
+  --radius-sm: 6px;
   --radius-md: 10px;
   --radius-lg: 15px;
   --radius-xl: 20px;
-
-  --font-sans: 'Poppins', sans-serif;
+  --radius-pill: 32px;
+  --radius-full: 9999px;
 }
 
-/* Theme variables for light/dark mode */
+/* ── Dark mode overrides via CSS custom properties ── */
 :root {
-  --page-bg: #F0F2F5;
-  --card-bg: #FFFFFF;
-  --input-bg: #F5F5F5;
-  --input-border: #F5F5F5;
-  --text-primary: #2D3748;
-  --text-heading: #1A202C;
-  --text-secondary: #767676;
-  --text-muted: #666666;
-  --divider: #DFDFDF;
+  --page-bg: var(--color-surface-page);
+  --card-bg: var(--color-surface-card);
+  --input-bg: var(--color-surface-card);
+  --input-border: var(--color-border-input);
+  --divider-color: var(--color-border-light);
 }
 
 .dark {
-  --page-bg: #232E42;
-  --card-bg: #112032;
-  --input-bg: #232E42;
-  --input-border: #232E42;
-  --text-primary: #FFFFFF;
-  --text-heading: #FFFFFF;
-  --text-secondary: rgba(255, 255, 255, 0.7);
-  --text-muted: #8C8F95;
-  --divider: rgba(237, 239, 241, 0.25);
+  --page-bg: var(--color-dark-secondary);
+  --card-bg: var(--color-dark-primary);
+  --input-bg: var(--color-dark-secondary);
+  --input-border: #3a4559;
+  --divider-color: rgba(237, 239, 241, 0.25);
 }
 
+/* ── Base layer ── */
 @layer base {
   html {
     scroll-behavior: smooth;
@@ -66,8 +98,12 @@
 
   body {
     background-color: var(--page-bg);
-    color: var(--text-primary);
+    color: var(--color-text-body);
     transition: background-color 0.2s ease, color 0.2s ease;
+  }
+
+  .dark body {
+    color: #FFFFFF;
   }
 
   ::-webkit-scrollbar {
@@ -78,18 +114,48 @@
     resize: none !important;
   }
 
-  button,
-  select {
-    cursor: pointer;
-  }
-
-  a:hover {
-    text-decoration: none;
-  }
-
   ul {
     padding: 0;
     margin: 0;
     list-style: none;
+  }
+}
+
+/* ── Or-divider pseudo-elements (can't do in Tailwind) ── */
+.or-divider {
+  position: relative;
+  text-align: center;
+}
+
+.or-divider::before,
+.or-divider::after {
+  content: "";
+  position: absolute;
+  width: 108px;
+  height: 2px;
+  border: 1px solid var(--divider-color);
+  border-radius: 6px;
+  bottom: 11px;
+}
+
+.or-divider::before {
+  left: 0;
+}
+
+.or-divider::after {
+  right: 0;
+}
+
+@media (max-width: 575px) {
+  .or-divider::before,
+  .or-divider::after {
+    width: 85px;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  .or-divider::before,
+  .or-divider::after {
+    width: 44% !important;
   }
 }
