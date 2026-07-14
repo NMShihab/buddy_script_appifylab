@@ -115,18 +115,38 @@ export async function GET(request: NextRequest) {
     });
 
     const postIds = posts.map((p) => p.id);
-    const userLikes = await prisma.postLike.findMany({
-      where: {
-        postId: { in: postIds },
-        userId: session.userId,
-      },
-      select: { postId: true },
-    });
+
+    const [userLikes, recentLikes] = await Promise.all([
+      prisma.postLike.findMany({
+        where: { postId: { in: postIds }, userId: session.userId },
+        select: { postId: true },
+      }),
+      prisma.postLike.findMany({
+        where: { postId: { in: postIds } },
+        orderBy: { createdAt: "desc" },
+        include: {
+          user: {
+            select: { id: true, firstName: true, lastName: true, avatarUrl: true },
+          },
+        },
+      }),
+    ]);
+
     const likedPostIds = new Set(userLikes.map((l) => l.postId));
+
+    const likersByPost = new Map<string, typeof recentLikes>();
+    for (const like of recentLikes) {
+      const existing = likersByPost.get(like.postId) ?? [];
+      if (existing.length < 3) {
+        existing.push(like);
+        likersByPost.set(like.postId, existing);
+      }
+    }
 
     const postsWithLiked = posts.map((post) => ({
       ...post,
       isLiked: likedPostIds.has(post.id),
+      recentLikers: (likersByPost.get(post.id) ?? []).map((l) => l.user),
     }));
 
     let nextCursor: string | null = null;

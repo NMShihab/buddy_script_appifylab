@@ -2,6 +2,7 @@
 
 import { useState, useCallback, useEffect } from "react";
 import FeedLayout from "./FeedLayout";
+import StoryBar from "./StoryBar";
 import CreatePost from "./CreatePost";
 import PostCard, { PostData } from "./PostCard";
 import { useInfiniteScroll } from "@/hooks/useInfiniteScroll";
@@ -87,7 +88,12 @@ export default function FeedContent() {
       setPosts((prev) =>
         prev.map((p) =>
           p.id === postId
-            ? { ...p, isLiked: data.liked, likesCount: data.likesCount }
+            ? {
+                ...p,
+                isLiked: data.liked,
+                likesCount: data.likesCount,
+                recentLikers: data.recentLikers ?? p.recentLikers,
+              }
             : p
         )
       );
@@ -98,6 +104,7 @@ export default function FeedContent() {
 
   return (
     <FeedLayout>
+      <StoryBar />
       <CreatePost onPostCreated={handlePostCreated} />
 
       {error && (

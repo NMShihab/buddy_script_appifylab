@@ -6,6 +6,13 @@ import { timeAgo } from "@/lib/timeago";
 import { useAuth } from "@/context/AuthContext";
 import CommentSection from "./CommentSection";
 
+export interface LikerInfo {
+  id: string;
+  firstName: string;
+  lastName: string;
+  avatarUrl: string | null;
+}
+
 export interface PostData {
   id: string;
   content: string;
@@ -15,6 +22,7 @@ export interface PostData {
   commentsCount: number;
   isLiked: boolean;
   createdAt: string;
+  recentLikers?: LikerInfo[];
   author: {
     id: string;
     firstName: string;
@@ -48,11 +56,16 @@ export default function PostCard({
   const [deleting, setDeleting] = useState(false);
   const [showComments, setShowComments] = useState(false);
   const [localCommentsCount, setLocalCommentsCount] = useState(post.commentsCount);
+  const [localLikers, setLocalLikers] = useState<LikerInfo[]>(post.recentLikers ?? []);
   const menuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     setLocalCommentsCount(post.commentsCount);
   }, [post.commentsCount]);
+
+  useEffect(() => {
+    setLocalLikers(post.recentLikers ?? []);
+  }, [post.recentLikers]);
 
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
@@ -230,14 +243,53 @@ export default function PostCard({
         </div>
       )}
 
-      {/* Reaction counts */}
+      {/* Reaction counts — liked-by + comments */}
       <div className="mt-4 flex items-center justify-between px-6">
-        <div className="flex items-center gap-1">
+        <div className="flex items-center gap-2">
           {post.likesCount > 0 && (
-            <span className="flex items-center text-xs text-text-muted">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-1 text-primary"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3" /></svg>
-              {post.likesCount}
-            </span>
+            <>
+              {/* Stacked avatars */}
+              <div className="flex -space-x-2">
+                {localLikers.slice(0, 3).map((liker) => (
+                  <div
+                    key={liker.id}
+                    className="h-[22px] w-[22px] overflow-hidden rounded-full border-2 border-[var(--card-bg)]"
+                  >
+                    <Image
+                      src={liker.avatarUrl || "/assets/images/profile.png"}
+                      alt={`${liker.firstName} ${liker.lastName}`}
+                      width={22}
+                      height={22}
+                      className="h-full w-full object-cover"
+                    />
+                  </div>
+                ))}
+              </div>
+              {/* Names */}
+              <span className="text-xs text-text-muted">
+                {localLikers.length > 0 && (
+                  <>
+                    Liked by{" "}
+                    <span className="font-medium text-text-heading">
+                      {localLikers[0].firstName} {localLikers[0].lastName}
+                    </span>
+                    {post.likesCount > 1 && (
+                      <>
+                        {" "}and{" "}
+                        <span className="font-medium text-text-heading">
+                          {post.likesCount - 1} other{post.likesCount - 1 > 1 ? "s" : ""}
+                        </span>
+                      </>
+                    )}
+                  </>
+                )}
+                {localLikers.length === 0 && (
+                  <>
+                    {post.likesCount} {post.likesCount === 1 ? "Like" : "Likes"}
+                  </>
+                )}
+              </span>
+            </>
           )}
         </div>
         <div className="flex items-center gap-3 text-xs text-text-muted">
