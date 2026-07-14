@@ -59,6 +59,16 @@ export default function FeedContent() {
     fetchPosts();
   };
 
+  const handlePostUpdated = (updatedPost: PostData) => {
+    setPosts((prev) =>
+      prev.map((p) => (p.id === updatedPost.id ? updatedPost : p))
+    );
+  };
+
+  const handlePostDeleted = (postId: string) => {
+    setPosts((prev) => prev.filter((p) => p.id !== postId));
+  };
+
   const handleLikeToggle = async (postId: string) => {
     try {
       const res = await fetch(`/api/posts/${postId}/like`, {
@@ -118,6 +128,8 @@ export default function FeedContent() {
               key={post.id}
               post={post}
               onLikeToggle={handleLikeToggle}
+              onPostUpdated={handlePostUpdated}
+              onPostDeleted={handlePostDeleted}
             />
           ))}
 

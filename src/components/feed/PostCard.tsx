@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import { timeAgo } from "@/lib/timeago";
 import { useAuth } from "@/context/AuthContext";
@@ -24,16 +25,71 @@ export interface PostData {
 interface PostCardProps {
   post: PostData;
   onLikeToggle?: (postId: string) => void;
+  onPostUpdated?: (post: PostData) => void;
+  onPostDeleted?: (postId: string) => void;
 }
 
-export default function PostCard({ post, onLikeToggle }: PostCardProps) {
+export default function PostCard({
+  post,
+  onLikeToggle,
+  onPostUpdated,
+  onPostDeleted,
+}: PostCardProps) {
   const { user } = useAuth();
   const isOwner = user?.id === post.author.id;
   const authorName = `${post.author.firstName} ${post.author.lastName}`;
 
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [editing, setEditing] = useState(false);
+  const [editContent, setEditContent] = useState(post.content);
+  const [editVisibility, setEditVisibility] = useState(post.visibility);
+  const [saving, setSaving] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
+        setMenuOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const handleEdit = async () => {
+    if (!editContent.trim()) return;
+    setSaving(true);
+    try {
+      const res = await fetch(`/api/posts/${post.id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ content: editContent, visibility: editVisibility }),
+      });
+      if (!res.ok) return;
+      const updated = await res.json();
+      onPostUpdated?.({ ...post, content: updated.content, visibility: updated.visibility });
+      setEditing(false);
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleDelete = async () => {
+    setDeleting(true);
+    try {
+      const res = await fetch(`/api/posts/${post.id}`, { method: "DELETE" });
+      if (!res.ok) return;
+      onPostDeleted?.(post.id);
+    } finally {
+      setDeleting(false);
+      setMenuOpen(false);
+    }
+  };
+
   return (
     <div className="mb-4 rounded-sm bg-[var(--card-bg)] pb-6 pt-6 transition-all duration-200">
-      {/* Header: avatar, name, time, visibility, menu */}
+      {/* Header */}
       <div className="flex items-center justify-between px-6">
         <div className="flex items-center gap-3">
           <div className="h-[42px] w-[42px] overflow-hidden rounded-full">
@@ -57,23 +113,100 @@ export default function PostCard({ post, onLikeToggle }: PostCardProps) {
             </p>
           </div>
         </div>
+
+        {/* 3-dot menu */}
         {isOwner && (
-          <button className="p-1 text-text-gray hover:text-text-muted">
-            <svg xmlns="http://www.w3.org/2000/svg" width="4" height="17" fill="none" viewBox="0 0 4 17">
-              <circle cx="2" cy="2" r="2" fill="currentColor" />
-              <circle cx="2" cy="8" r="2" fill="currentColor" />
-              <circle cx="2" cy="15" r="2" fill="currentColor" />
-            </svg>
-          </button>
+          <div className="relative" ref={menuRef}>
+            <button
+              onClick={() => setMenuOpen(!menuOpen)}
+              className="p-1 text-text-gray hover:text-text-muted"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="4" height="17" fill="none" viewBox="0 0 4 17">
+                <circle cx="2" cy="2" r="2" fill="currentColor" />
+                <circle cx="2" cy="8" r="2" fill="currentColor" />
+                <circle cx="2" cy="15" r="2" fill="currentColor" />
+              </svg>
+            </button>
+
+            {menuOpen && (
+              <div className="absolute right-0 top-full z-10 mt-1 w-[180px] rounded-sm bg-[var(--card-bg)] py-2 shadow-[0px_8px_24px_rgba(149,157,165,0.2)]">
+                <button
+                  onClick={() => {
+                    setEditing(true);
+                    setEditContent(post.content);
+                    setEditVisibility(post.visibility);
+                    setMenuOpen(false);
+                  }}
+                  className="flex w-full items-center gap-2 px-4 py-2 text-sm text-text-body transition-colors hover:bg-surface-input dark:text-white dark:hover:bg-dark-secondary"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 18 18">
+                    <path stroke="#1890FF" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.2" d="M8.25 3H3a1.5 1.5 0 00-1.5 1.5V15A1.5 1.5 0 003 16.5h10.5A1.5 1.5 0 0015 15V9.75" />
+                    <path stroke="#1890FF" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.2" d="M13.875 1.875a1.591 1.591 0 112.25 2.25L9 11.25 6 12l.75-3 7.125-7.125z" />
+                  </svg>
+                  Edit Post
+                </button>
+                <button
+                  onClick={handleDelete}
+                  disabled={deleting}
+                  className="flex w-full items-center gap-2 px-4 py-2 text-sm text-red-500 transition-colors hover:bg-surface-input dark:hover:bg-dark-secondary"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 18 18">
+                    <path stroke="#ef4444" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.2" d="M2.25 4.5h13.5M6 4.5V3a1.5 1.5 0 011.5-1.5h3A1.5 1.5 0 0112 3v1.5m2.25 0V15a1.5 1.5 0 01-1.5 1.5h-7.5a1.5 1.5 0 01-1.5-1.5V4.5h10.5zM7.5 8.25v4.5M10.5 8.25v4.5" />
+                  </svg>
+                  {deleting ? "Deleting..." : "Delete Post"}
+                </button>
+              </div>
+            )}
+          </div>
         )}
       </div>
 
-      {/* Content */}
-      <div className="px-6 pt-3">
-        <p className="text-sm leading-relaxed text-text-body dark:text-white/90 whitespace-pre-wrap">
-          {post.content}
-        </p>
-      </div>
+      {/* Content — edit mode or display */}
+      {editing ? (
+        <div className="px-6 pt-3">
+          <textarea
+            value={editContent}
+            onChange={(e) => setEditContent(e.target.value)}
+            rows={4}
+            className="w-full rounded-sm border border-border-input bg-[var(--input-bg)] p-3 text-sm leading-relaxed text-text-body outline-none focus:border-primary dark:border-white/10 dark:text-white"
+          />
+          <div className="mt-2 flex items-center justify-between">
+            <button
+              onClick={() =>
+                setEditVisibility(editVisibility === "PUBLIC" ? "PRIVATE" : "PUBLIC")
+              }
+              className={`rounded-pill px-3 py-1 text-xs font-medium transition-colors ${
+                editVisibility === "PUBLIC"
+                  ? "bg-primary-light text-primary dark:bg-primary/20"
+                  : "bg-surface-input text-text-muted dark:bg-dark-secondary dark:text-white/60"
+              }`}
+            >
+              {editVisibility === "PUBLIC" ? "Public" : "Private"}
+            </button>
+            <div className="flex gap-2">
+              <button
+                onClick={() => setEditing(false)}
+                className="rounded-sm px-4 py-1.5 text-sm text-text-muted hover:bg-surface-input dark:text-white/60 dark:hover:bg-dark-secondary"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleEdit}
+                disabled={saving || !editContent.trim()}
+                className="rounded-sm bg-primary px-4 py-1.5 text-sm font-medium text-white disabled:opacity-50"
+              >
+                {saving ? "Saving..." : "Save"}
+              </button>
+            </div>
+          </div>
+        </div>
+      ) : (
+        <div className="px-6 pt-3">
+          <p className="whitespace-pre-wrap text-sm leading-relaxed text-text-body dark:text-white/90">
+            {post.content}
+          </p>
+        </div>
+      )}
 
       {/* Post image */}
       {post.imageUrl && (
@@ -94,12 +227,10 @@ export default function PostCard({ post, onLikeToggle }: PostCardProps) {
       <div className="mt-4 flex items-center justify-between px-6">
         <div className="flex items-center gap-1">
           {post.likesCount > 0 && (
-            <>
-              <span className="flex items-center text-xs text-text-muted dark:text-white/50">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-1 text-primary"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3" /></svg>
-                {post.likesCount}
-              </span>
-            </>
+            <span className="flex items-center text-xs text-text-muted dark:text-white/50">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-1 text-primary"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3" /></svg>
+              {post.likesCount}
+            </span>
           )}
         </div>
         <div className="flex items-center gap-3 text-xs text-text-muted dark:text-white/50">
@@ -109,14 +240,12 @@ export default function PostCard({ post, onLikeToggle }: PostCardProps) {
         </div>
       </div>
 
-      {/* Action buttons: Like, Comment, Share */}
-      <div className="mx-6 mt-3 flex items-center border-t border-b border-border-input py-1 dark:border-white/10">
+      {/* Action buttons */}
+      <div className="mx-6 mt-3 flex items-center border-b border-t border-border-input py-1 dark:border-white/10">
         <button
           onClick={() => onLikeToggle?.(post.id)}
           className={`flex flex-1 items-center justify-center gap-2 rounded py-2 text-sm font-medium transition-colors hover:bg-surface-input dark:hover:bg-dark-secondary ${
-            post.isLiked
-              ? "text-primary"
-              : "text-text-body/60 dark:text-white/60"
+            post.isLiked ? "text-primary" : "text-text-body/60 dark:text-white/60"
           }`}
         >
           <svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" fill="none" viewBox="0 0 19 19">
