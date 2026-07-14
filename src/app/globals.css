@@ -1,15 +1,10 @@
 @import "tailwindcss";
 
 @theme inline {
-  /* Typography */
-  --font-poppins: 'Poppins', sans-serif;
-
-  /* Light mode colors from design system */
   --color-primary: #1890FF;
   --color-primary-hover: #1478d4;
   --color-accent: #0ACF83;
 
-  /* Text colors */
   --color-text-dark: #2D3748;
   --color-text-darker: #1A202C;
   --color-text-brown: #312000;
@@ -19,45 +14,27 @@
   --color-text-secondary: #666666;
   --color-text-light: #767676;
 
-  /* Background colors */
   --color-bg-page: #F0F2F5;
   --color-bg-card: #FFFFFF;
   --color-bg-input: #F5F5F5;
   --color-bg-divider: #DFDFDF;
   --color-bg-dark-primary: #112032;
   --color-bg-dark-secondary: #232E42;
-
-  /* Accent backgrounds */
   --color-bg-primary-light: #e8f4ff;
 
-  /* Shadows */
   --shadow-card: 0px 2px 4px rgba(0, 0, 0, 0.08);
   --shadow-dropdown: 0px 8px 24px rgba(149, 157, 165, 0.2);
   --shadow-dark-dropdown: 0px 5px 15px rgba(0, 0, 0, 0.35);
 
-  /* Border radius */
   --radius-sm: 5px;
   --radius-md: 10px;
   --radius-lg: 15px;
   --radius-xl: 20px;
-  --radius-full: 50%;
+
+  --font-sans: 'Poppins', sans-serif;
 }
 
-/* Base styles */
-* {
-  margin: 0;
-  padding: 0;
-}
-
-html {
-  scroll-behavior: smooth;
-}
-
-body {
-  font-family: var(--font-poppins);
-}
-
-/* Light mode (default) */
+/* Theme variables for light/dark mode */
 :root {
   --page-bg: #F0F2F5;
   --card-bg: #FFFFFF;
@@ -68,11 +45,8 @@ body {
   --text-secondary: #767676;
   --text-muted: #666666;
   --divider: #DFDFDF;
-  --shadow-base: 0px 2px 4px rgba(0, 0, 0, 0.08);
-  --dropdown-shadow: 0px 8px 24px rgba(149, 157, 165, 0.2);
 }
 
-/* Dark mode */
 .dark {
   --page-bg: #232E42;
   --card-bg: #112032;
@@ -83,49 +57,39 @@ body {
   --text-secondary: rgba(255, 255, 255, 0.7);
   --text-muted: #8C8F95;
   --divider: rgba(237, 239, 241, 0.25);
-  --shadow-base: none;
-  --dropdown-shadow: 0px 5px 15px rgba(0, 0, 0, 0.35);
 }
 
-body {
-  background-color: var(--page-bg);
-  color: var(--text-primary);
-  transition: background-color 0.2s ease, color 0.2s ease;
-}
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
 
-/* Scrollbar hiding (matching original design) */
-::-webkit-scrollbar {
-  display: none;
-}
+  body {
+    background-color: var(--page-bg);
+    color: var(--text-primary);
+    transition: background-color 0.2s ease, color 0.2s ease;
+  }
 
-textarea {
-  resize: none !important;
-}
+  ::-webkit-scrollbar {
+    display: none;
+  }
 
-button,
-select {
-  cursor: pointer;
-}
+  textarea {
+    resize: none !important;
+  }
 
-button:focus,
-input:focus,
-select:focus,
-textarea:focus {
-  outline: none;
-}
+  button,
+  select {
+    cursor: pointer;
+  }
 
-a:hover {
-  text-decoration: none;
-  color: #1890FF;
-}
+  a:hover {
+    text-decoration: none;
+  }
 
-ul {
-  padding: 0;
-  margin: 0;
-  list-style: none;
-}
-
-/* Form input focus style from design */
-.form-input:focus {
-  border-color: #1890FF;
+  ul {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+  }
 }

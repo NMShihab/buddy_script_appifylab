@@ -6,7 +6,7 @@ import { sessionOptions, SessionData } from "@/lib/auth";
 const protectedRoutes = ["/feed"];
 const authRoutes = ["/login", "/register"];
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   const session = await getIronSession<SessionData>(

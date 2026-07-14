@@ -1,7 +1,18 @@
+"use client";
+
+import dynamic from "next/dynamic";
+
+const AuthLayout = dynamic(() => import("@/components/layout/AuthLayout"), {
+  ssr: false,
+});
+const LoginForm = dynamic(() => import("@/components/auth/LoginForm"), {
+  ssr: false,
+});
+
 export default function LoginPage() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-[var(--page-bg)]">
-      <p className="text-[var(--text-secondary)]">Login page — UI coming in Step 4</p>
-    </div>
+    <AuthLayout illustration="/assets/images/login.png">
+      <LoginForm />
+    </AuthLayout>
   );
 }
