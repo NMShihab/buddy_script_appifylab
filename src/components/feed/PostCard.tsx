@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import { timeAgo } from "@/lib/timeago";
 import { useAuth } from "@/context/AuthContext";
+import CommentSection from "./CommentSection";
 
 export interface PostData {
   id: string;
@@ -45,6 +46,8 @@ export default function PostCard({
   const [editVisibility, setEditVisibility] = useState(post.visibility);
   const [saving, setSaving] = useState(false);
   const [deleting, setDeleting] = useState(false);
+  const [showComments, setShowComments] = useState(false);
+  const [localCommentsCount, setLocalCommentsCount] = useState(post.commentsCount);
   const menuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -234,8 +237,8 @@ export default function PostCard({
           )}
         </div>
         <div className="flex items-center gap-3 text-xs text-text-muted dark:text-white/50">
-          {post.commentsCount > 0 && (
-            <span>{post.commentsCount} Comment{post.commentsCount > 1 ? "s" : ""}</span>
+          {localCommentsCount > 0 && (
+            <span>{localCommentsCount} Comment{localCommentsCount > 1 ? "s" : ""}</span>
           )}
         </div>
       </div>
@@ -260,7 +263,12 @@ export default function PostCard({
           </svg>
           {post.isLiked ? "Liked" : "Like"}
         </button>
-        <button className="flex flex-1 items-center justify-center gap-2 rounded py-2 text-sm font-medium text-text-body/60 transition-colors hover:bg-surface-input dark:text-white/60 dark:hover:bg-dark-secondary">
+        <button
+          onClick={() => setShowComments(!showComments)}
+          className={`flex flex-1 items-center justify-center gap-2 rounded py-2 text-sm font-medium transition-colors hover:bg-surface-input dark:hover:bg-dark-secondary ${
+            showComments ? "text-primary" : "text-text-body/60 dark:text-white/60"
+          }`}
+        >
           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 21 21">
             <path stroke="currentColor" d="M1 10.5c0-.464 0-.696.009-.893A9 9 0 019.607 1.01C9.804 1 10.036 1 10.5 1v0c.464 0 .696 0 .893.009a9 9 0 018.598 8.598c.009.197.009.429.009.893v6.046c0 1.36 0 2.041-.317 2.535a2 2 0 01-.602.602c-.494.317-1.174.317-2.535.317H10.5c-.464 0-.696 0-.893-.009a9 9 0 01-8.598-8.598C1 11.196 1 10.964 1 10.5v0z" />
             <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" d="M6.938 9.313h7.125M10.5 14.063h3.563" />
@@ -274,6 +282,13 @@ export default function PostCard({
           Share
         </button>
       </div>
+
+      {showComments && (
+        <CommentSection
+          postId={post.id}
+          onCommentCountChange={(delta) => setLocalCommentsCount((c) => c + delta)}
+        />
+      )}
     </div>
   );
 }
