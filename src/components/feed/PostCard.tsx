@@ -13,6 +13,8 @@ export interface LikerInfo {
   avatarUrl: string | null;
 }
 
+export type ReactionType = "LIKE" | "HAHA" | "HEART";
+
 export interface PostData {
   id: string;
   content: string;
@@ -21,6 +23,7 @@ export interface PostData {
   likesCount: number;
   commentsCount: number;
   isLiked: boolean;
+  reactionType?: ReactionType | null;
   createdAt: string;
   recentLikers?: LikerInfo[];
   author: {
@@ -33,7 +36,7 @@ export interface PostData {
 
 interface PostCardProps {
   post: PostData;
-  onLikeToggle?: (postId: string) => void;
+  onLikeToggle?: (postId: string, reactionType?: ReactionType) => void;
   onPostUpdated?: (post: PostData) => void;
   onPostDeleted?: (postId: string) => void;
 }
@@ -56,6 +59,7 @@ export default function PostCard({
   const [saving, setSaving] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [showComments, setShowComments] = useState(false);
+  const [showReactions, setShowReactions] = useState(false);
   const [localCommentsCount, setLocalCommentsCount] = useState(post.commentsCount);
   const [localLikers, setLocalLikers] = useState<LikerInfo[]>(post.recentLikers ?? []);
   const menuRef = useRef<HTMLDivElement>(null);
@@ -294,24 +298,86 @@ export default function PostCard({
 
       {/* Action buttons */}
       <div className="mx-6 mt-3 flex items-center border-b border-t border-border-input py-1">
-        <button
-          onClick={() => onLikeToggle?.(post.id)}
-          className={`flex flex-1 cursor-pointer items-center justify-center gap-2 rounded py-2 text-sm font-medium transition-colors hover:bg-surface-input ${
-            post.isLiked ? "text-primary" : "text-text-body/60"
-          }`}
+        <div
+          className="group/react relative flex flex-1"
+          onMouseLeave={() => setShowReactions(false)}
         >
-          <svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" fill="none" viewBox="0 0 19 19">
-            <path fill={post.isLiked ? "#FFCC4D" : "currentColor"} d="M9.5 19a9.5 9.5 0 100-19 9.5 9.5 0 000 19z" opacity={post.isLiked ? "1" : "0.3"} />
-            {post.isLiked && (
-              <>
-                <path fill="#664500" d="M9.5 11.083c-1.912 0-3.181-.222-4.75-.527-.358-.07-1.056 0-1.056 1.055 0 2.111 2.425 4.75 5.806 4.75 3.38 0 5.805-2.639 5.805-4.75 0-1.055-.697-1.125-1.055-1.055-1.57.305-2.838.527-4.75.527z" />
-                <path fill="#fff" d="M4.75 11.611s1.583.528 4.75.528 4.75-.528 4.75-.528-1.056 2.111-4.75 2.111-4.75-2.11-4.75-2.11z" />
-                <path fill="#664500" d="M6.333 8.972c.729 0 1.32-.827 1.32-1.847s-.591-1.847-1.32-1.847c-.729 0-1.32.827-1.32 1.847s.591 1.847 1.32 1.847zM12.667 8.972c.729 0 1.32-.827 1.32-1.847s-.591-1.847-1.32-1.847c-.729 0-1.32.827-1.32 1.847s.591 1.847 1.32 1.847z" />
-              </>
+          {/* Reaction picker popup */}
+          {showReactions && (
+            <div className="absolute -top-12 left-1/2 z-20 flex -translate-x-1/2 gap-1 rounded-full bg-[var(--card-bg)] px-2 py-1.5 shadow-[var(--dropdown-shadow)]">
+              <button
+                onClick={() => { onLikeToggle?.(post.id, "LIKE"); setShowReactions(false); }}
+                className="flex h-8 w-8 items-center justify-center rounded-full transition-transform hover:scale-125"
+                title="Like"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1890FF" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3" />
+                </svg>
+              </button>
+              <button
+                onClick={() => { onLikeToggle?.(post.id, "HAHA"); setShowReactions(false); }}
+                className="flex h-8 w-8 items-center justify-center rounded-full transition-transform hover:scale-125"
+                title="Haha"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 19 19">
+                  <path fill="#FFCC4D" d="M9.5 19a9.5 9.5 0 100-19 9.5 9.5 0 000 19z" />
+                  <path fill="#664500" d="M9.5 11.083c-1.912 0-3.181-.222-4.75-.527-.358-.07-1.056 0-1.056 1.055 0 2.111 2.425 4.75 5.806 4.75 3.38 0 5.805-2.639 5.805-4.75 0-1.055-.697-1.125-1.055-1.055-1.57.305-2.838.527-4.75.527z" />
+                  <path fill="#fff" d="M4.75 11.611s1.583.528 4.75.528 4.75-.528 4.75-.528-1.056 2.111-4.75 2.111-4.75-2.11-4.75-2.11z" />
+                  <path fill="#664500" d="M6.333 8.972c.729 0 1.32-.827 1.32-1.847s-.591-1.847-1.32-1.847c-.729 0-1.32.827-1.32 1.847s.591 1.847 1.32 1.847zM12.667 8.972c.729 0 1.32-.827 1.32-1.847s-.591-1.847-1.32-1.847c-.729 0-1.32.827-1.32 1.847s.591 1.847 1.32 1.847z" />
+                </svg>
+              </button>
+              <button
+                onClick={() => { onLikeToggle?.(post.id, "HEART"); setShowReactions(false); }}
+                className="flex h-8 w-8 items-center justify-center rounded-full transition-transform hover:scale-125"
+                title="Heart"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="#FF3040" stroke="none">
+                  <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+                </svg>
+              </button>
+            </div>
+          )}
+
+          <button
+            onClick={() => onLikeToggle?.(post.id, post.reactionType ?? "LIKE")}
+            onMouseEnter={() => setShowReactions(true)}
+            className={`flex flex-1 cursor-pointer items-center justify-center gap-2 rounded py-2 text-sm font-medium transition-colors hover:bg-surface-input ${
+              post.isLiked
+                ? post.reactionType === "HEART"
+                  ? "text-[#FF3040]"
+                  : "text-primary"
+                : "text-text-body/60"
+            }`}
+          >
+            {post.isLiked && post.reactionType === "HEART" ? (
+              <svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" viewBox="0 0 24 24" fill="#FF3040" stroke="none">
+                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+              </svg>
+            ) : post.isLiked && post.reactionType === "LIKE" ? (
+              <svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#1890FF" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3" />
+              </svg>
+            ) : (
+              <svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" fill="none" viewBox="0 0 19 19">
+                <path fill={post.isLiked ? "#FFCC4D" : "currentColor"} d="M9.5 19a9.5 9.5 0 100-19 9.5 9.5 0 000 19z" opacity={post.isLiked ? "1" : "0.3"} />
+                {post.isLiked && (
+                  <>
+                    <path fill="#664500" d="M9.5 11.083c-1.912 0-3.181-.222-4.75-.527-.358-.07-1.056 0-1.056 1.055 0 2.111 2.425 4.75 5.806 4.75 3.38 0 5.805-2.639 5.805-4.75 0-1.055-.697-1.125-1.055-1.055-1.57.305-2.838.527-4.75.527z" />
+                    <path fill="#fff" d="M4.75 11.611s1.583.528 4.75.528 4.75-.528 4.75-.528-1.056 2.111-4.75 2.111-4.75-2.11-4.75-2.11z" />
+                    <path fill="#664500" d="M6.333 8.972c.729 0 1.32-.827 1.32-1.847s-.591-1.847-1.32-1.847c-.729 0-1.32.827-1.32 1.847s.591 1.847 1.32 1.847zM12.667 8.972c.729 0 1.32-.827 1.32-1.847s-.591-1.847-1.32-1.847c-.729 0-1.32.827-1.32 1.847s.591 1.847 1.32 1.847z" />
+                  </>
+                )}
+              </svg>
             )}
-          </svg>
-          {post.isLiked ? "Liked" : "Like"}
-        </button>
+            {post.isLiked
+              ? post.reactionType === "HEART"
+                ? "Heart"
+                : post.reactionType === "HAHA"
+                  ? "Haha"
+                  : "Liked"
+              : "Like"}
+          </button>
+        </div>
         <button
           onClick={() => setShowComments(!showComments)}
           className={`flex flex-1 cursor-pointer items-center justify-center gap-2 rounded py-2 text-sm font-medium transition-colors hover:bg-surface-input ${

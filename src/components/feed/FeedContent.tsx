@@ -4,7 +4,7 @@ import { useState, useCallback, useEffect } from "react";
 import FeedLayout from "./FeedLayout";
 import StoryBar from "./StoryBar";
 import CreatePost from "./CreatePost";
-import PostCard, { PostData } from "./PostCard";
+import PostCard, { PostData, ReactionType } from "./PostCard";
 import { useInfiniteScroll } from "@/hooks/useInfiniteScroll";
 
 export default function FeedContent() {
@@ -77,10 +77,12 @@ export default function FeedContent() {
     setPosts((prev) => prev.filter((p) => p.id !== postId));
   };
 
-  const handleLikeToggle = async (postId: string) => {
+  const handleLikeToggle = async (postId: string, reactionType?: ReactionType) => {
     try {
       const res = await fetch(`/api/posts/${postId}/like`, {
         method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ reactionType: reactionType ?? "LIKE" }),
       });
       if (!res.ok) return;
       const data = await res.json();
@@ -92,6 +94,7 @@ export default function FeedContent() {
                 ...p,
                 isLiked: data.liked,
                 likesCount: data.likesCount,
+                reactionType: data.reactionType ?? null,
                 recentLikers: data.recentLikers ?? p.recentLikers,
               }
             : p

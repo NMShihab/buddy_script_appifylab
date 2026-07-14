@@ -4,6 +4,8 @@ import { cookies } from "next/headers";
 import { prisma } from "@/lib/prisma";
 import { sessionOptions, SessionData } from "@/lib/auth";
 
+const VALID_REACTIONS = new Set(["LIKE", "HAHA", "HEART"]);
+
 async function getRecentLikers(postId: string, limit = 3) {
   const likes = await prisma.postLike.findMany({
     where: { postId },
@@ -71,7 +73,7 @@ export async function GET(
 }
 
 export async function POST(
-  _request: NextRequest,
+  request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
@@ -86,6 +88,16 @@ export async function POST(
 
     const { id: postId } = await params;
 
+    let reactionType = "LIKE";
+    try {
+      const body = await request.json();
+      if (body.reactionType && VALID_REACTIONS.has(body.reactionType)) {
+        reactionType = body.reactionType;
+      }
+    } catch {
+      // no body or invalid JSON — default to LIKE
+    }
+
     const existing = await prisma.postLike.findUnique({
       where: {
         unique_post_like: { postId, userId: session.userId },
@@ -93,30 +105,59 @@ export async function POST(
     });
 
     if (existing) {
-      await prisma.$transaction([
-        prisma.postLike.delete({ where: { id: existing.id } }),
-        prisma.post.update({
+      if (existing.reactionType === reactionType) {
+        // Same reaction — unlike
+        await prisma.$transaction([
+          prisma.postLike.delete({ where: { id: existing.id } }),
+          prisma.post.update({
+            where: { id: postId },
+            data: { likesCount: { decrement: 1 } },
+          }),
+        ]);
+
+        const post = await prisma.post.findUnique({
           where: { id: postId },
-          data: { likesCount: { decrement: 1 } },
-        }),
-      ]);
+          select: { likesCount: true },
+        });
 
-      const post = await prisma.post.findUnique({
-        where: { id: postId },
-        select: { likesCount: true },
-      });
+        const recentLikers = await getRecentLikers(postId);
 
-      const recentLikers = await getRecentLikers(postId);
+        return NextResponse.json({
+          liked: false,
+          likesCount: post?.likesCount ?? 0,
+          reactionType: null,
+          recentLikers,
+        });
+      } else {
+        // Different reaction — update type
+        await prisma.postLike.update({
+          where: { id: existing.id },
+          data: { reactionType: reactionType as "LIKE" | "HAHA" | "HEART" },
+        });
 
-      return NextResponse.json({
-        liked: false,
-        likesCount: post?.likesCount ?? 0,
-        recentLikers,
-      });
+        const post = await prisma.post.findUnique({
+          where: { id: postId },
+          select: { likesCount: true },
+        });
+
+        const recentLikers = await getRecentLikers(postId);
+
+        return NextResponse.json({
+          liked: true,
+          likesCount: post?.likesCount ?? 0,
+          reactionType,
+          recentLikers,
+        });
+      }
     } else {
+      // New reaction
       await prisma.$transaction([
         prisma.postLike.create({
-          data: { postId, userId: session.userId },
+          data: {
+            postId,
+            userId: session.userId,
+            reactionType: reactionType as "LIKE" | "HAHA" | "HEART",
+          },
         }),
         prisma.post.update({
           where: { id: postId },
@@ -134,6 +175,7 @@ export async function POST(
       return NextResponse.json({
         liked: true,
         likesCount: post?.likesCount ?? 0,
+        reactionType,
         recentLikers,
       });
     }

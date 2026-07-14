@@ -119,7 +119,7 @@ export async function GET(request: NextRequest) {
     const [userLikes, recentLikes] = await Promise.all([
       prisma.postLike.findMany({
         where: { postId: { in: postIds }, userId: session.userId },
-        select: { postId: true },
+        select: { postId: true, reactionType: true },
       }),
       prisma.postLike.findMany({
         where: { postId: { in: postIds } },
@@ -132,7 +132,7 @@ export async function GET(request: NextRequest) {
       }),
     ]);
 
-    const likedPostIds = new Set(userLikes.map((l) => l.postId));
+    const likesByPost = new Map(userLikes.map((l) => [l.postId, l.reactionType]));
 
     const likersByPost = new Map<string, typeof recentLikes>();
     for (const like of recentLikes) {
@@ -145,7 +145,8 @@ export async function GET(request: NextRequest) {
 
     const postsWithLiked = posts.map((post) => ({
       ...post,
-      isLiked: likedPostIds.has(post.id),
+      isLiked: likesByPost.has(post.id),
+      reactionType: likesByPost.get(post.id) ?? null,
       recentLikers: (likersByPost.get(post.id) ?? []).map((l) => l.user),
     }));
 
