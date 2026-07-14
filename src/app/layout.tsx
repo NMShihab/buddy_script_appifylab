@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { ThemeProvider } from "@/context/ThemeContext";
 import { AuthProvider } from "@/context/AuthContext";
 import "./globals.css";
 
@@ -31,9 +30,7 @@ export default function RootLayout({
         />
       </head>
       <body className="antialiased">
-        <ThemeProvider>
-          <AuthProvider>{children}</AuthProvider>
-        </ThemeProvider>
+        <AuthProvider>{children}</AuthProvider>
       </body>
     </html>
   );

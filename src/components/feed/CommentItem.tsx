@@ -131,11 +131,11 @@ export default function CommentItem({
           />
         </div>
         <div className="flex-1 min-w-0">
-          <div className="rounded-lg bg-surface-input/50 px-3 py-2 dark:bg-dark-secondary/50">
-            <h4 className="text-[13px] font-semibold text-text-heading dark:text-white">
+          <div className="rounded-lg bg-surface-input/50 px-3 py-2">
+            <h4 className="text-[13px] font-semibold text-text-heading">
               {authorName}
             </h4>
-            <p className="mt-0.5 text-[13px] leading-relaxed text-text-body dark:text-white/80">
+            <p className="mt-0.5 text-[13px] leading-relaxed text-text-body">
               {comment.content}
             </p>
           </div>
@@ -145,7 +145,7 @@ export default function CommentItem({
               <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-primary">
                 <path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3" />
               </svg>
-              <span className="text-xs text-text-muted dark:text-white/50">{comment.likesCount}</span>
+              <span className="text-xs text-text-muted">{comment.likesCount}</span>
             </div>
           )}
 
@@ -153,25 +153,25 @@ export default function CommentItem({
             <button
               onClick={() => onLike?.(comment.id)}
               className={`text-xs font-medium transition-colors hover:text-primary ${
-                comment.isLiked ? "text-primary" : "text-text-muted dark:text-white/50"
+                comment.isLiked ? "text-primary" : "text-text-muted"
               }`}
             >
               Like
             </button>
-            <span className="text-xs text-text-muted dark:text-white/50">.</span>
+            <span className="text-xs text-text-muted">.</span>
             {!isReply && (
               <>
                 <button
                   onClick={() => setShowReplyInput(!showReplyInput)}
-                  className="text-xs font-medium text-text-muted transition-colors hover:text-primary dark:text-white/50"
+                  className="text-xs font-medium text-text-muted transition-colors hover:text-primary"
                 >
                   Reply
                 </button>
-                <span className="text-xs text-text-muted dark:text-white/50">.</span>
+                <span className="text-xs text-text-muted">.</span>
               </>
             )}
-            <span className="text-xs text-text-muted dark:text-white/50">Share</span>
-            <span className="text-xs text-text-muted dark:text-white/40">
+            <span className="text-xs text-text-muted">Share</span>
+            <span className="text-xs text-text-muted">
               .{timeAgo(comment.createdAt)}
             </span>
           </div>
@@ -200,13 +200,13 @@ export default function CommentItem({
                   className="h-full w-full object-cover"
                 />
               </div>
-              <div className="flex flex-1 items-center gap-2 rounded-full border border-border-input bg-[var(--input-bg)] px-3 dark:border-white/10">
+              <div className="flex flex-1 items-center gap-2 rounded-full border border-border-input bg-[var(--input-bg)] px-3">
                 <input
                   type="text"
                   value={replyContent}
                   onChange={(e) => setReplyContent(e.target.value)}
                   placeholder={`Reply to ${comment.author.firstName}...`}
-                  className="flex-1 bg-transparent py-1.5 text-[12px] text-text-body outline-none placeholder:text-text-muted/60 dark:text-white dark:placeholder:text-white/40"
+                  className="flex-1 bg-transparent py-1.5 text-[12px] text-text-body outline-none placeholder:text-text-muted/60"
                   autoFocus
                 />
                 <button
@@ -224,7 +224,7 @@ export default function CommentItem({
 
           {/* Replies list */}
           {showReplies && (
-            <div className="mt-2 space-y-2 pl-2 border-l-2 border-border-input/50 dark:border-white/10">
+            <div className="mt-2 space-y-2 pl-2 border-l-2 border-border-input/50">
               {replies.map((reply) => (
                 <CommentItem
                   key={reply.id}

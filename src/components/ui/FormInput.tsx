@@ -30,7 +30,7 @@ export default function FormInput({
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
         required={required}
-        className="h-12 w-full rounded-sm border border-[var(--input-border)] bg-[var(--input-bg)] px-4 text-sm leading-[1.4] text-text-body placeholder:text-[13px] placeholder:font-normal placeholder:leading-[1.4] placeholder:text-text-body focus:border-primary dark:text-white"
+        className="h-12 w-full rounded-sm border border-[var(--input-border)] bg-[var(--input-bg)] px-4 text-sm leading-[1.4] text-text-body placeholder:text-[13px] placeholder:font-normal placeholder:leading-[1.4] placeholder:text-text-muted focus:border-[var(--input-focus-border)] focus:shadow-none focus:outline-none"
       />
     </div>
   );

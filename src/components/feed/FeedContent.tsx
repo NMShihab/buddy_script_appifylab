@@ -101,8 +101,8 @@ export default function FeedContent() {
       <CreatePost onPostCreated={handlePostCreated} />
 
       {error && (
-        <div className="mb-4 rounded-sm bg-red-50 p-4 text-center dark:bg-red-900/20">
-          <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
+        <div className="mb-4 rounded-sm bg-red-50 p-4 text-center">
+          <p className="text-sm text-red-600">{error}</p>
           <button
             onClick={() => fetchPosts()}
             className="mt-2 text-sm font-medium text-primary hover:underline"
@@ -120,23 +120,23 @@ export default function FeedContent() {
               className="animate-pulse rounded-sm bg-[var(--card-bg)] p-6"
             >
               <div className="flex items-center gap-3">
-                <div className="h-10 w-10 rounded-full bg-surface-input dark:bg-dark-secondary" />
+                <div className="h-10 w-10 rounded-full bg-surface-input" />
                 <div className="flex-1 space-y-2">
-                  <div className="h-3 w-24 rounded bg-surface-input dark:bg-dark-secondary" />
-                  <div className="h-2 w-16 rounded bg-surface-input dark:bg-dark-secondary" />
+                  <div className="h-3 w-24 rounded bg-surface-input" />
+                  <div className="h-2 w-16 rounded bg-surface-input" />
                 </div>
               </div>
               <div className="mt-4 space-y-2">
-                <div className="h-3 w-full rounded bg-surface-input dark:bg-dark-secondary" />
-                <div className="h-3 w-3/4 rounded bg-surface-input dark:bg-dark-secondary" />
+                <div className="h-3 w-full rounded bg-surface-input" />
+                <div className="h-3 w-3/4 rounded bg-surface-input" />
               </div>
-              <div className="mt-4 h-48 rounded bg-surface-input dark:bg-dark-secondary" />
+              <div className="mt-4 h-48 rounded bg-surface-input" />
             </div>
           ))}
         </div>
       ) : posts.length === 0 ? (
         <div className="rounded-sm bg-[var(--card-bg)] p-12 text-center transition-all duration-200">
-          <p className="text-sm text-text-muted dark:text-white/60">
+          <p className="text-sm text-text-muted">
             No posts yet. Be the first to share something!
           </p>
         </div>

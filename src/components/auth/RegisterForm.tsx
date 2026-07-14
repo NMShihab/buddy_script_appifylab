@@ -57,10 +57,10 @@ export default function RegisterForm() {
 
   return (
     <>
-      <p className="mb-2 text-center text-base font-normal leading-[1.4] text-text-body dark:text-white">
+      <p className="mb-2 text-center text-base font-normal leading-[1.4] text-text-body">
         Get Started Now
       </p>
-      <h4 className="mb-[50px] text-center text-[28px] font-medium leading-[1.2] text-text-heading dark:text-white max-[575px]:text-[22px]">
+      <h4 className="mb-12.5 text-center text-[28px] font-medium leading-[1.2] text-text-heading max-[575px]:text-[22px] ">
         Registration
       </h4>
 
@@ -126,7 +126,7 @@ export default function RegisterForm() {
           onChange={setAgreeTerms}
         />
 
-        <div className="mb-[60px] mt-10">
+        <div className="mb-16 mt-10">
           <PrimaryButton type="submit" disabled={loading}>
             {loading ? "Creating account..." : "Register now"}
           </PrimaryButton>
@@ -134,7 +134,7 @@ export default function RegisterForm() {
       </form>
 
       <div className="text-center">
-        <p className="text-sm text-text-light dark:text-white/70">
+        <p className="text-sm text-text-light">
           Already have an account?{" "}
           <Link href="/login" className="text-primary hover:underline">
             Login

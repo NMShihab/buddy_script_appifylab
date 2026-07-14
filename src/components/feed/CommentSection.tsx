@@ -93,13 +93,13 @@ export default function CommentSection({ postId, onCommentCountChange }: Comment
             className="h-full w-full object-cover"
           />
         </div>
-        <div className="flex flex-1 items-center gap-2 rounded-full border border-border-input bg-[var(--input-bg)] px-3 dark:border-white/10">
+        <div className="flex flex-1 items-center gap-2 rounded-full border border-border-input bg-[var(--input-bg)] px-3">
           <input
             type="text"
             value={content}
             onChange={(e) => setContent(e.target.value)}
             placeholder="Write a comment"
-            className="flex-1 bg-transparent py-2 text-[13px] text-text-body outline-none placeholder:text-text-muted/60 dark:text-white dark:placeholder:text-white/40"
+            className="flex-1 bg-transparent py-2 text-[13px] text-text-body outline-none placeholder:text-text-muted/60"
           />
           <button
             type="submit"

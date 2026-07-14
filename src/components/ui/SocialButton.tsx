@@ -17,7 +17,7 @@ export default function SocialButton({
     <button
       type="button"
       onClick={onClick}
-      className="flex w-full items-center justify-center rounded-sm border border-border-page bg-[var(--card-bg)] px-[60px] py-3 dark:border-[var(--input-border)]"
+      className="flex w-full items-center justify-center rounded-sm border border-border-page bg-[var(--card-bg)] px-[60px] py-3"
     >
       <Image
         src={icon}
@@ -26,7 +26,7 @@ export default function SocialButton({
         height={20}
         className="mr-2 !h-5 !w-5 flex-none"
       />
-      <span className="flex-none text-base font-medium leading-[1.4] text-text-brown dark:text-white">
+      <span className="flex-none text-base font-medium leading-[1.4] text-text-brown">
         {label}
       </span>
     </button>

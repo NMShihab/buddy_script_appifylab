@@ -80,12 +80,12 @@ export default function LeftSidebar() {
     <aside className="hidden flex-col overflow-auto pt-[18px] lg:flex" style={{ height: "calc(100vh - 70px)" }}>
       {/* Explore */}
       <div className="mb-4 rounded-sm bg-[var(--card-bg)] p-6 pb-1.5 transition-all duration-200">
-        <h4 className="mb-6 text-lg font-medium text-text-heading dark:text-white">Explore</h4>
+        <h4 className="mb-6 text-lg font-medium text-text-heading">Explore</h4>
         <ul>
           {exploreItems.map((item) => (
             <li key={item.label} className="relative mb-6 flex items-center justify-between">
-              <span className="flex items-center text-base font-medium leading-[1.4] text-text-muted transition-colors hover:text-primary dark:text-white/70 dark:hover:text-primary">
-                <span className="mr-3.5 text-text-muted dark:text-white/60">
+              <span className="flex items-center text-base font-medium leading-[1.4] text-text-muted transition-colors hover:text-primary">
+                <span className="mr-3.5 text-text-muted">
                   <ExploreIcon icon={item.icon} />
                 </span>
                 {item.label}
@@ -103,7 +103,7 @@ export default function LeftSidebar() {
       {/* Suggested People */}
       <div className="mb-4 rounded-sm bg-[var(--card-bg)] p-6 pb-1.5 transition-all duration-200">
         <div className="mb-6 flex items-center justify-between">
-          <h4 className="text-lg font-medium text-text-heading dark:text-white">Suggested People</h4>
+          <h4 className="text-lg font-medium text-text-heading">Suggested People</h4>
           <span className="cursor-pointer text-xs font-medium leading-[18px] text-primary">See All</span>
         </div>
         {suggestedPeople.map((person) => (
@@ -113,11 +113,11 @@ export default function LeftSidebar() {
                 <Image src={person.img} alt={person.name} width={40} height={40} className="h-full w-full object-cover" />
               </div>
               <div>
-                <h4 className="text-sm font-medium text-text-heading dark:text-white">{person.name}</h4>
-                <p className="text-xs text-text-muted dark:text-white/60">{person.role}</p>
+                <h4 className="text-sm font-medium text-text-heading">{person.name}</h4>
+                <p className="text-xs text-text-muted">{person.role}</p>
               </div>
             </div>
-            <span className="cursor-pointer rounded-[2px] border border-[#DCDFE4] px-[7px] py-[7px] text-xs font-medium text-[#959EAE] dark:border-white/20 dark:text-white/50">
+            <span className="cursor-pointer rounded-[2px] border border-[#DCDFE4] px-[7px] py-[7px] text-xs font-medium text-[#959EAE]">
               Connect
             </span>
           </div>
@@ -127,24 +127,24 @@ export default function LeftSidebar() {
       {/* Events */}
       <div className="mb-4 rounded-sm bg-[var(--card-bg)] p-6 pb-1.5 transition-all duration-200">
         <div className="mb-6 flex items-center justify-between">
-          <h4 className="text-lg font-medium text-text-heading dark:text-white">Events</h4>
+          <h4 className="text-lg font-medium text-text-heading">Events</h4>
           <span className="cursor-pointer text-xs font-medium text-primary">See all</span>
         </div>
         {events.map((event, i) => (
-          <div key={i} className="mb-4 overflow-hidden rounded-sm border border-border-input dark:border-white/10">
+          <div key={i} className="mb-4 overflow-hidden rounded-sm border border-border-input">
             <div className="relative h-[120px] w-full">
               <Image src={event.img} alt={event.title} fill className="object-cover" />
             </div>
             <div className="flex items-center gap-3 p-3">
               <div className="text-center">
                 <p className="text-lg font-semibold text-primary">{event.date}</p>
-                <p className="text-xs text-text-muted dark:text-white/60">{event.month}</p>
+                <p className="text-xs text-text-muted">{event.month}</p>
               </div>
-              <h4 className="text-sm font-medium leading-tight text-text-heading dark:text-white">{event.title}</h4>
+              <h4 className="text-sm font-medium leading-tight text-text-heading">{event.title}</h4>
             </div>
-            <hr className="border-border-input dark:border-white/10" />
+            <hr className="border-border-input" />
             <div className="flex items-center justify-between p-3">
-              <p className="text-xs text-text-muted dark:text-white/60">{event.going} People Going</p>
+              <p className="text-xs text-text-muted">{event.going} People Going</p>
               <span className="cursor-pointer text-xs font-medium text-primary">Going</span>
             </div>
           </div>

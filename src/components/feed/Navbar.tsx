@@ -4,11 +4,9 @@ import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useAuth } from "@/context/AuthContext";
-import { useTheme } from "@/context/ThemeContext";
 
 export default function Navbar() {
   const { user, logout } = useAuth();
-  const { theme, toggleTheme } = useTheme();
   const [profileOpen, setProfileOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -60,7 +58,7 @@ export default function Navbar() {
             <input
               type="search"
               placeholder="Search..."
-              className="h-[42px] w-[280px] rounded-pill border border-border-input bg-[var(--input-bg)] pl-11 pr-4 text-sm text-text-body outline-none placeholder:text-text-muted focus:border-primary dark:text-white"
+              className="h-[42px] w-[280px] rounded-pill border border-border-input bg-[var(--input-bg)] pl-11 pr-4 text-sm text-text-body outline-none placeholder:text-text-muted focus:border-primary"
             />
           </div>
         </div>
@@ -105,24 +103,6 @@ export default function Navbar() {
           </li>
         </ul>
 
-        {/* Theme toggle */}
-        <button
-          type="button"
-          onClick={toggleTheme}
-          className="ml-4 flex h-10 w-10 items-center justify-center rounded-full bg-white shadow-[0px_4px_13px_rgba(24,144,255,0.1)] transition-all duration-200 dark:bg-dark-secondary"
-        >
-          {theme === "dark" ? (
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-              <circle cx="12" cy="12" r="4.389" stroke="#fff" transform="rotate(-90 12 12)" />
-              <path stroke="#fff" strokeLinecap="round" d="M3.444 12H1M23 12h-2.444M5.95 5.95L4.222 4.22M19.778 19.779L18.05 18.05M12 3.444V1M12 23v-2.445M18.05 5.95l1.728-1.729M4.222 19.779L5.95 18.05" />
-            </svg>
-          ) : (
-            <svg xmlns="http://www.w3.org/2000/svg" width="11" height="16" fill="none" viewBox="0 0 11 16">
-              <path fill="#112032" d="M2.727 14.977l.04-.498-.04.498zm-1.72-.49l.489-.11-.489.11zM3.232 1.212L3.514.8l-.282.413zM9.792 8a6.5 6.5 0 00-6.5-6.5v-1a7.5 7.5 0 017.5 7.5h-1zm-6.5 6.5a6.5 6.5 0 006.5-6.5h1a7.5 7.5 0 01-7.5 7.5v-1zm-.525-.02c.173.013.348.02.525.02v1c-.204 0-.405-.008-.605-.024l.08-.997zm-.261-1.83A6.498 6.498 0 005.792 7h1a7.498 7.498 0 01-3.791 6.52l-.495-.87zM5.792 7a6.493 6.493 0 00-2.841-5.374L3.514.8A7.493 7.493 0 016.792 7h-1zm-3.105 8.476c-.528-.042-.985-.077-1.314-.155-.316-.075-.746-.242-.854-.726l.977-.217c-.028-.124-.145-.09.106-.03.237.056.6.086 1.165.131l-.08.997zm.314-1.956c-.622.354-1.045.596-1.31.792a.967.967 0 00-.204.185c-.01.013.027-.038.009-.12l-.977.218a.836.836 0 01.144-.666c.112-.162.27-.3.433-.42.324-.24.814-.519 1.41-.858L3 13.52zM3.292 1.5a.391.391 0 00.374-.285A.382.382 0 003.514.8l-.563.826A.618.618 0 012.702.95a.609.609 0 01.59-.45v1z" />
-            </svg>
-          )}
-        </button>
-
         {/* Profile dropdown */}
         <div className="relative ml-4" ref={dropdownRef}>
           <div className="flex cursor-pointer items-center gap-2" onClick={() => setProfileOpen(!profileOpen)}>
@@ -136,7 +116,7 @@ export default function Navbar() {
               />
             </div>
             <div className="hidden items-center gap-1 lg:flex">
-              <p className="text-sm font-medium text-text-heading dark:text-white">{displayName}</p>
+              <p className="text-sm font-medium text-text-heading">{displayName}</p>
               <svg xmlns="http://www.w3.org/2000/svg" width="10" height="6" fill="none" viewBox="0 0 10 6" className={`transition-transform ${profileOpen ? "rotate-180" : ""}`}>
                 <path fill="currentColor" d="M5 5l.354.354L5 5.707l-.354-.353L5 5zm4.354-3.646l-4 4-.708-.708 4-4 .708.708zm-4.708 4l-4-4 .708-.708 4 4-.708.708z" />
               </svg>
@@ -156,13 +136,13 @@ export default function Navbar() {
                   />
                 </div>
                 <div>
-                  <h4 className="text-sm font-medium text-text-heading dark:text-white">{displayName}</h4>
+                  <h4 className="text-sm font-medium text-text-heading">{displayName}</h4>
                   <p className="text-xs text-primary">View Profile</p>
                 </div>
               </div>
               <ul className="space-y-1">
                 <li>
-                  <button className="flex w-full items-center gap-3 rounded px-2 py-2 text-sm text-text-muted transition-colors hover:bg-surface-input dark:text-white/70 dark:hover:bg-dark-secondary">
+                  <button className="flex w-full items-center gap-3 rounded px-2 py-2 text-sm text-text-muted transition-colors hover:bg-surface-input">
                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="19" fill="none" viewBox="0 0 18 19"><path fill="#377DFF" d="M9.584 0c.671 0 1.315.267 1.783.74.468.473.721 1.112.7 1.709l.009.14a.985.985 0 00.136.395c.145.242.382.418.659.488.276.071.57.03.849-.13l.155-.078c1.165-.538 2.563-.11 3.21.991l.58.99a.695.695 0 01.04.081l.055.107c.519 1.089.15 2.385-.838 3.043l-.244.15a1.046 1.046 0 00-.313.339 1.042 1.042 0 00-.11.805c.074.272.255.504.53.66l.158.1c.478.328.823.812.973 1.367.17.626.08 1.292-.257 1.86l-.625 1.022-.094.144c-.735 1.038-2.16 1.355-3.248.738l-.129-.066a1.123 1.123 0 00-.412-.095 1.087 1.087 0 00-.766.31c-.204.2-.317.471-.316.786l-.008.163C11.956 18.022 10.88 19 9.584 19h-1.17c-1.373 0-2.486-1.093-2.484-2.398l-.008-.14a.994.994 0 00-.14-.401 1.066 1.066 0 00-.652-.493 1.12 1.12 0 00-.852.127l-.169.083a2.526 2.526 0 01-1.698.122 2.47 2.47 0 01-1.488-1.154l-.604-1.024-.08-.152a2.404 2.404 0 01.975-3.132l.1-.061c.292-.199.467-.527.467-.877 0-.381-.207-.733-.569-.94l-.147-.092a2.419 2.419 0 01-.724-3.236l.615-.993a2.503 2.503 0 013.366-.912l.126.066c.13.058.269.089.403.09a1.08 1.08 0 001.086-1.068l.008-.185c.049-.57.301-1.106.713-1.513A2.5 2.5 0 018.414 0h1.17zm-.58 6.395c-1.744 0-3.16 1.39-3.16 3.105s1.416 3.105 3.16 3.105c1.746 0 3.161-1.39 3.161-3.105s-1.415-3.105-3.16-3.105z" /></svg>
                     Settings
                   </button>
@@ -170,7 +150,7 @@ export default function Navbar() {
                 <li>
                   <button
                     onClick={() => { setProfileOpen(false); logout(); }}
-                    className="flex w-full items-center gap-3 rounded px-2 py-2 text-sm text-text-muted transition-colors hover:bg-surface-input dark:text-white/70 dark:hover:bg-dark-secondary"
+                    className="flex w-full items-center gap-3 rounded px-2 py-2 text-sm text-text-muted transition-colors hover:bg-surface-input"
                   >
                     <svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" fill="none" viewBox="0 0 19 19"><path stroke="#377DFF" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M6.667 18H2.889A1.889 1.889 0 011 16.111V2.89A1.889 1.889 0 012.889 1h3.778M13.277 14.222L18 9.5l-4.723-4.722M18 9.5H6.667" /></svg>
                     Log Out

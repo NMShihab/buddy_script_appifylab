@@ -35,11 +35,11 @@ export default function LoginForm() {
   return (
     <>
       {/* _mar_b8 */}
-      <p className="mb-2 text-center text-base font-normal leading-[1.4] text-text-body dark:text-white">
+      <p className="mb-2 text-center text-base font-normal leading-[1.4] text-text-body">
         Welcome back
       </p>
       {/* _titl4 _mar_b50 → font-size:28px, mb:50px */}
-      <h4 className="mb-[50px] text-center text-[28px] font-medium leading-[1.2] text-text-heading dark:text-white max-[575px]:text-[22px]">
+      <h4 className="mb-[50px] text-center text-[28px] font-medium leading-[1.2] text-text-heading max-[575px]:text-[22px]">
         Login to your account
       </h4>
 
@@ -98,7 +98,7 @@ export default function LoginForm() {
 
       {/* Bottom link — font-size:14px */}
       <div className="text-center">
-        <p className="text-sm text-text-light dark:text-white/70">
+        <p className="text-sm text-text-light">
           Don&apos;t have an account?{" "}
           <Link href="/register" className="text-primary hover:underline">
             Create New Account

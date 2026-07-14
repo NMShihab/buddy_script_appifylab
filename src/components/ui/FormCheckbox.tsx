@@ -24,7 +24,7 @@ export default function FormCheckbox({
       />
       <label
         htmlFor={id}
-        className="ml-2 text-sm font-normal leading-[1.4] text-text-body dark:text-white"
+        className="ml-2 text-sm font-normal leading-[1.4] text-text-body"
       >
         {label}
       </label>

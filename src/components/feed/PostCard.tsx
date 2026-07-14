@@ -109,10 +109,10 @@ export default function PostCard({
             />
           </div>
           <div>
-            <h4 className="text-sm font-medium text-text-heading dark:text-white">
+            <h4 className="text-sm font-medium text-text-heading">
               {authorName}
             </h4>
-            <p className="text-xs text-text-muted dark:text-white/50">
+            <p className="text-xs text-text-muted">
               {timeAgo(post.createdAt)} .{" "}
               <span className="text-primary">
                 {post.visibility === "PUBLIC" ? "Public" : "Private"}
@@ -144,7 +144,7 @@ export default function PostCard({
                     setEditVisibility(post.visibility);
                     setMenuOpen(false);
                   }}
-                  className="flex w-full items-center gap-2 px-4 py-2 text-sm text-text-body transition-colors hover:bg-surface-input dark:text-white dark:hover:bg-dark-secondary"
+                  className="flex w-full items-center gap-2 px-4 py-2 text-sm text-text-body transition-colors hover:bg-surface-input"
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 18 18">
                     <path stroke="#1890FF" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.2" d="M8.25 3H3a1.5 1.5 0 00-1.5 1.5V15A1.5 1.5 0 003 16.5h10.5A1.5 1.5 0 0015 15V9.75" />
@@ -155,7 +155,7 @@ export default function PostCard({
                 <button
                   onClick={handleDelete}
                   disabled={deleting}
-                  className="flex w-full items-center gap-2 px-4 py-2 text-sm text-red-500 transition-colors hover:bg-surface-input dark:hover:bg-dark-secondary"
+                  className="flex w-full items-center gap-2 px-4 py-2 text-sm text-red-500 transition-colors hover:bg-surface-input"
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 18 18">
                     <path stroke="#ef4444" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.2" d="M2.25 4.5h13.5M6 4.5V3a1.5 1.5 0 011.5-1.5h3A1.5 1.5 0 0112 3v1.5m2.25 0V15a1.5 1.5 0 01-1.5 1.5h-7.5a1.5 1.5 0 01-1.5-1.5V4.5h10.5zM7.5 8.25v4.5M10.5 8.25v4.5" />
@@ -175,7 +175,7 @@ export default function PostCard({
             value={editContent}
             onChange={(e) => setEditContent(e.target.value)}
             rows={4}
-            className="w-full rounded-sm border border-border-input bg-[var(--input-bg)] p-3 text-sm leading-relaxed text-text-body outline-none focus:border-primary dark:border-white/10 dark:text-white"
+            className="w-full rounded-sm border border-border-input bg-[var(--input-bg)] p-3 text-sm leading-relaxed text-text-body outline-none focus:border-primary"
           />
           <div className="mt-2 flex items-center justify-between">
             <button
@@ -184,8 +184,8 @@ export default function PostCard({
               }
               className={`rounded-pill px-3 py-1 text-xs font-medium transition-colors ${
                 editVisibility === "PUBLIC"
-                  ? "bg-primary-light text-primary dark:bg-primary/20"
-                  : "bg-surface-input text-text-muted dark:bg-dark-secondary dark:text-white/60"
+                  ? "bg-primary-light text-primary"
+                  : "bg-surface-input text-text-muted"
               }`}
             >
               {editVisibility === "PUBLIC" ? "Public" : "Private"}
@@ -193,7 +193,7 @@ export default function PostCard({
             <div className="flex gap-2">
               <button
                 onClick={() => setEditing(false)}
-                className="rounded-sm px-4 py-1.5 text-sm text-text-muted hover:bg-surface-input dark:text-white/60 dark:hover:bg-dark-secondary"
+                className="rounded-sm px-4 py-1.5 text-sm text-text-muted hover:bg-surface-input"
               >
                 Cancel
               </button>
@@ -209,7 +209,7 @@ export default function PostCard({
         </div>
       ) : (
         <div className="px-6 pt-3">
-          <p className="whitespace-pre-wrap text-sm leading-relaxed text-text-body dark:text-white/90">
+          <p className="whitespace-pre-wrap text-sm leading-relaxed text-text-body">
             {post.content}
           </p>
         </div>
@@ -234,13 +234,13 @@ export default function PostCard({
       <div className="mt-4 flex items-center justify-between px-6">
         <div className="flex items-center gap-1">
           {post.likesCount > 0 && (
-            <span className="flex items-center text-xs text-text-muted dark:text-white/50">
+            <span className="flex items-center text-xs text-text-muted">
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-1 text-primary"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3" /></svg>
               {post.likesCount}
             </span>
           )}
         </div>
-        <div className="flex items-center gap-3 text-xs text-text-muted dark:text-white/50">
+        <div className="flex items-center gap-3 text-xs text-text-muted">
           {localCommentsCount > 0 && (
             <span>{localCommentsCount} Comment{localCommentsCount > 1 ? "s" : ""}</span>
           )}
@@ -248,11 +248,11 @@ export default function PostCard({
       </div>
 
       {/* Action buttons */}
-      <div className="mx-6 mt-3 flex items-center border-b border-t border-border-input py-1 dark:border-white/10">
+      <div className="mx-6 mt-3 flex items-center border-b border-t border-border-input py-1">
         <button
           onClick={() => onLikeToggle?.(post.id)}
-          className={`flex flex-1 items-center justify-center gap-2 rounded py-2 text-sm font-medium transition-colors hover:bg-surface-input dark:hover:bg-dark-secondary ${
-            post.isLiked ? "text-primary" : "text-text-body/60 dark:text-white/60"
+          className={`flex flex-1 items-center justify-center gap-2 rounded py-2 text-sm font-medium transition-colors hover:bg-surface-input ${
+            post.isLiked ? "text-primary" : "text-text-body/60"
           }`}
         >
           <svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" fill="none" viewBox="0 0 19 19">
@@ -269,8 +269,8 @@ export default function PostCard({
         </button>
         <button
           onClick={() => setShowComments(!showComments)}
-          className={`flex flex-1 items-center justify-center gap-2 rounded py-2 text-sm font-medium transition-colors hover:bg-surface-input dark:hover:bg-dark-secondary ${
-            showComments ? "text-primary" : "text-text-body/60 dark:text-white/60"
+          className={`flex flex-1 items-center justify-center gap-2 rounded py-2 text-sm font-medium transition-colors hover:bg-surface-input ${
+            showComments ? "text-primary" : "text-text-body/60"
           }`}
         >
           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 21 21">
@@ -279,7 +279,7 @@ export default function PostCard({
           </svg>
           Comment
         </button>
-        <button className="flex flex-1 items-center justify-center gap-2 rounded py-2 text-sm font-medium text-text-body/60 transition-colors hover:bg-surface-input dark:text-white/60 dark:hover:bg-dark-secondary">
+        <button className="flex flex-1 items-center justify-center gap-2 rounded py-2 text-sm font-medium text-text-body/60 transition-colors hover:bg-surface-input">
           <svg xmlns="http://www.w3.org/2000/svg" width="22" height="20" fill="none" viewBox="0 0 24 21">
             <path stroke="currentColor" strokeLinejoin="round" d="M23 10.5L12.917 1v5.429C3.267 6.429 1 13.258 1 20c2.785-3.52 5.248-5.429 11.917-5.429V20L23 10.5z" />
           </svg>
