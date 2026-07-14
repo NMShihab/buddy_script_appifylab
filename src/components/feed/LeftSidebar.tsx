@@ -77,7 +77,7 @@ function ExploreIcon({ icon }: { icon: string }) {
 
 export default function LeftSidebar() {
   return (
-    <aside className="hidden flex-col overflow-auto pt-[18px] lg:flex" style={{ height: "calc(100vh - 75px)" }}>
+    <aside className="hidden flex-col overflow-auto pt-[18px] lg:flex" style={{ height: "calc(100vh - 70px)" }}>
       {/* Explore */}
       <div className="mb-4 rounded-sm bg-[var(--card-bg)] p-6 pb-1.5 transition-all duration-200">
         <h4 className="mb-6 text-lg font-medium text-text-heading dark:text-white">Explore</h4>

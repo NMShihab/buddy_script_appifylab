@@ -23,7 +23,7 @@ export default function FeedLayout({ children }: FeedLayoutProps) {
 
       {/* Main 3-column layout */}
       <div className="mx-auto max-w-[1320px] px-3">
-        <div className="relative overflow-hidden pt-[70px] max-lg:pt-[56px]">
+        <div className="relative overflow-hidden pt-[70px] max-lg:pt-[52px]">
           <div className="flex">
             {/* Left sidebar — 3/12 on lg+ */}
             <div className="hidden w-3/12 lg:block">
@@ -33,8 +33,8 @@ export default function FeedLayout({ children }: FeedLayoutProps) {
             {/* Middle content — 6/12 on lg+, full on mobile */}
             <div className="w-full lg:w-6/12">
               <div
-                className="flex flex-1 flex-col overflow-auto px-0 pt-2.5 max-lg:pb-16 lg:px-2"
-                style={{ height: "calc(100vh - 75px)" }}
+                className="flex flex-1 flex-col overflow-auto px-0 pt-2.5 max-lg:pb-20 lg:px-2"
+                style={{ height: "calc(100vh - 70px)" }}
               >
                 {children}
               </div>

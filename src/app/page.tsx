@@ -14,10 +14,10 @@ export default function Home() {
             priority
           />
         </div>
-        <h1 className="mb-2 text-3xl font-semibold text-[var(--text-heading)]">
+        <h1 className="mb-2 text-3xl font-semibold text-text-heading dark:text-white">
           Welcome to Buddy Script
         </h1>
-        <p className="mb-8 text-base text-[var(--text-secondary)]">
+        <p className="mb-8 text-base text-text-muted dark:text-white/60">
           Connect, Share, and Engage with your community
         </p>
         <div className="flex items-center justify-center gap-4">

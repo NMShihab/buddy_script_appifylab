@@ -28,7 +28,7 @@ export default function Navbar() {
 
   return (
     <nav className="fixed left-0 right-0 top-0 z-[1030] bg-[var(--card-bg)] transition-all duration-200">
-      <div className="mx-auto flex max-w-[1320px] items-center px-3">
+      <div className="mx-auto flex h-[70px] max-w-[1320px] items-center px-3">
         {/* Logo */}
         <div className="flex items-center">
           <Link href="/feed">
@@ -144,7 +144,7 @@ export default function Navbar() {
           </div>
 
           {profileOpen && (
-            <div className="absolute right-0 top-full mt-2 w-[280px] rounded-sm bg-[var(--card-bg)] p-4 shadow-[0px_8px_24px_rgba(149,157,165,0.2)]">
+            <div className="absolute right-0 top-full mt-2 w-[280px] rounded-sm bg-[var(--card-bg)] p-4 shadow-[var(--dropdown-shadow)]">
               <div className="mb-3 flex items-center gap-3 border-b border-border-input pb-3">
                 <div className="h-10 w-10 overflow-hidden rounded-full">
                   <Image

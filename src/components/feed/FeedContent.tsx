@@ -12,18 +12,23 @@ export default function FeedContent() {
   const [loading, setLoading] = useState(false);
   const [initialLoad, setInitialLoad] = useState(true);
   const [hasMore, setHasMore] = useState(true);
+  const [error, setError] = useState("");
 
   const fetchPosts = useCallback(
     async (cursor?: string | null) => {
       if (loading) return;
       setLoading(true);
+      setError("");
       try {
         const params = new URLSearchParams();
         if (cursor) params.set("cursor", cursor);
         params.set("limit", "20");
 
         const res = await fetch(`/api/posts?${params}`);
-        if (!res.ok) return;
+        if (!res.ok) {
+          setError("Failed to load posts. Please try again.");
+          return;
+        }
 
         const data = await res.json();
         setPosts((prev) =>
@@ -31,6 +36,8 @@ export default function FeedContent() {
         );
         setNextCursor(data.nextCursor);
         setHasMore(!!data.nextCursor);
+      } catch {
+        setError("Network error. Please check your connection.");
       } finally {
         setLoading(false);
         setInitialLoad(false);
@@ -92,6 +99,18 @@ export default function FeedContent() {
   return (
     <FeedLayout>
       <CreatePost onPostCreated={handlePostCreated} />
+
+      {error && (
+        <div className="mb-4 rounded-sm bg-red-50 p-4 text-center dark:bg-red-900/20">
+          <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
+          <button
+            onClick={() => fetchPosts()}
+            className="mt-2 text-sm font-medium text-primary hover:underline"
+          >
+            Try again
+          </button>
+        </div>
+      )}
 
       {initialLoad ? (
         <div className="space-y-4">

@@ -51,6 +51,10 @@ export default function PostCard({
   const menuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    setLocalCommentsCount(post.commentsCount);
+  }, [post.commentsCount]);
+
+  useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
       if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
         setMenuOpen(false);
@@ -132,7 +136,7 @@ export default function PostCard({
             </button>
 
             {menuOpen && (
-              <div className="absolute right-0 top-full z-10 mt-1 w-[180px] rounded-sm bg-[var(--card-bg)] py-2 shadow-[0px_8px_24px_rgba(149,157,165,0.2)]">
+              <div className="absolute right-0 top-full z-10 mt-1 w-[180px] rounded-sm bg-[var(--card-bg)] py-2 shadow-[var(--dropdown-shadow)]">
                 <button
                   onClick={() => {
                     setEditing(true);

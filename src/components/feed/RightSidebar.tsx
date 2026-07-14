@@ -19,7 +19,7 @@ const friends = [
 
 export default function RightSidebar() {
   return (
-    <aside className="hidden flex-col overflow-auto pt-[18px] lg:flex" style={{ height: "calc(100vh - 75px)" }}>
+    <aside className="hidden flex-col overflow-auto pt-[18px] lg:flex" style={{ height: "calc(100vh - 70px)" }}>
       {/* You Might Like */}
       <div className="mb-4 rounded-sm bg-[var(--card-bg)] p-6 transition-all duration-200">
         <div className="mb-6 flex items-center justify-between">
