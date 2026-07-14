@@ -33,7 +33,7 @@ export default function FeedLayout({ children }: FeedLayoutProps) {
             {/* Middle content — 6/12 on lg+, full on mobile */}
             <div className="w-full lg:w-6/12">
               <div
-                className="flex flex-1 flex-col overflow-auto px-0 pt-2.5 max-lg:pb-20 lg:px-2"
+                className="flex flex-1 flex-col overflow-auto px-0 pt-[18px] max-lg:pb-20 lg:px-2"
                 style={{ height: "calc(100vh - 70px)" }}
               >
                 {children}

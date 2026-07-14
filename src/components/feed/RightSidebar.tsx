@@ -39,10 +39,10 @@ export default function RightSidebar() {
               </div>
             </div>
             <div className="flex gap-2">
-              <button className="flex-1 rounded-[2px] border border-[#DCDFE4] py-[7px] text-xs font-medium text-[#959EAE] transition-colors hover:border-primary hover:text-primary">
+              <button className="flex-1 cursor-pointer rounded-[2px] border border-[#DCDFE4] py-[7px] text-xs font-medium text-[#959EAE] transition-colors hover:border-primary hover:text-primary">
                 Ignore
               </button>
-              <button className="flex-1 rounded-[2px] bg-primary py-[7px] text-xs font-medium text-white transition-colors hover:bg-primary-hover">
+              <button className="flex-1 cursor-pointer rounded-[2px] bg-primary py-[7px] text-xs font-medium text-white transition-colors hover:bg-primary-hover">
                 Follow
               </button>
             </div>

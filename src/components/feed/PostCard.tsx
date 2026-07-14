@@ -49,6 +49,7 @@ export default function PostCard({
   const authorName = `${post.author.firstName} ${post.author.lastName}`;
 
   const [menuOpen, setMenuOpen] = useState(false);
+  const [expanded, setExpanded] = useState(false);
   const [editing, setEditing] = useState(false);
   const [editContent, setEditContent] = useState(post.content);
   const [editVisibility, setEditVisibility] = useState(post.visibility);
@@ -222,9 +223,17 @@ export default function PostCard({
         </div>
       ) : (
         <div className="px-6 pt-3">
-          <p className="whitespace-pre-wrap text-sm leading-relaxed text-text-body">
+          <p className={`whitespace-pre-wrap text-sm leading-relaxed text-text-body ${!expanded ? "line-clamp-2" : ""}`}>
             {post.content}
           </p>
+          {post.content.length > 120 && !expanded && (
+            <button
+              onClick={() => setExpanded(true)}
+              className="mt-1 cursor-pointer text-sm font-medium text-primary hover:underline"
+            >
+              See more
+            </button>
+          )}
         </div>
       )}
 
@@ -245,56 +254,40 @@ export default function PostCard({
 
       {/* Reaction counts — liked-by + comments */}
       <div className="mt-4 flex items-center justify-between px-6">
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1.5">
           {post.likesCount > 0 && (
             <>
-              {/* Stacked avatars */}
-              <div className="flex -space-x-2">
+              <div className="flex items-center -space-x-1.5">
                 {localLikers.slice(0, 3).map((liker) => (
                   <div
                     key={liker.id}
-                    className="h-[22px] w-[22px] overflow-hidden rounded-full border-2 border-[var(--card-bg)]"
+                    className="group relative h-[28px] w-[28px] cursor-pointer overflow-hidden rounded-full border-[1.5px] border-[var(--card-bg)] transition-transform hover:z-10 hover:scale-110"
+                    title={`${liker.firstName} ${liker.lastName}`}
                   >
                     <Image
                       src={liker.avatarUrl || "/assets/images/profile.png"}
                       alt={`${liker.firstName} ${liker.lastName}`}
-                      width={22}
-                      height={22}
+                      width={28}
+                      height={28}
                       className="h-full w-full object-cover"
                     />
+                    <div className="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded bg-text-dark px-2 py-1 text-[10px] text-white opacity-0 transition-opacity group-hover:opacity-100">
+                      {liker.firstName} {liker.lastName}
+                    </div>
                   </div>
                 ))}
               </div>
-              {/* Names */}
-              <span className="text-xs text-text-muted">
-                {localLikers.length > 0 && (
-                  <>
-                    Liked by{" "}
-                    <span className="font-medium text-text-heading">
-                      {localLikers[0].firstName} {localLikers[0].lastName}
-                    </span>
-                    {post.likesCount > 1 && (
-                      <>
-                        {" "}and{" "}
-                        <span className="font-medium text-text-heading">
-                          {post.likesCount - 1} other{post.likesCount - 1 > 1 ? "s" : ""}
-                        </span>
-                      </>
-                    )}
-                  </>
-                )}
-                {localLikers.length === 0 && (
-                  <>
-                    {post.likesCount} {post.likesCount === 1 ? "Like" : "Likes"}
-                  </>
-                )}
-              </span>
+              <p className="text-xs text-text-muted">
+                {post.likesCount > 3 ? `${post.likesCount}+` : `${post.likesCount}`}
+              </p>
             </>
           )}
         </div>
-        <div className="flex items-center gap-3 text-xs text-text-muted">
+        <div className="flex items-center gap-4 text-xs text-text-muted">
           {localCommentsCount > 0 && (
-            <span>{localCommentsCount} Comment{localCommentsCount > 1 ? "s" : ""}</span>
+            <p>
+              <span className="font-medium">{localCommentsCount}</span> Comment
+            </p>
           )}
         </div>
       </div>
@@ -303,7 +296,7 @@ export default function PostCard({
       <div className="mx-6 mt-3 flex items-center border-b border-t border-border-input py-1">
         <button
           onClick={() => onLikeToggle?.(post.id)}
-          className={`flex flex-1 items-center justify-center gap-2 rounded py-2 text-sm font-medium transition-colors hover:bg-surface-input ${
+          className={`flex flex-1 cursor-pointer items-center justify-center gap-2 rounded py-2 text-sm font-medium transition-colors hover:bg-surface-input ${
             post.isLiked ? "text-primary" : "text-text-body/60"
           }`}
         >
@@ -321,7 +314,7 @@ export default function PostCard({
         </button>
         <button
           onClick={() => setShowComments(!showComments)}
-          className={`flex flex-1 items-center justify-center gap-2 rounded py-2 text-sm font-medium transition-colors hover:bg-surface-input ${
+          className={`flex flex-1 cursor-pointer items-center justify-center gap-2 rounded py-2 text-sm font-medium transition-colors hover:bg-surface-input ${
             showComments ? "text-primary" : "text-text-body/60"
           }`}
         >
@@ -331,7 +324,7 @@ export default function PostCard({
           </svg>
           Comment
         </button>
-        <button className="flex flex-1 items-center justify-center gap-2 rounded py-2 text-sm font-medium text-text-body/60 transition-colors hover:bg-surface-input">
+        <button className="flex flex-1 cursor-pointer items-center justify-center gap-2 rounded py-2 text-sm font-medium text-text-body/60 transition-colors hover:bg-surface-input">
           <svg xmlns="http://www.w3.org/2000/svg" width="22" height="20" fill="none" viewBox="0 0 24 21">
             <path stroke="currentColor" strokeLinejoin="round" d="M23 10.5L12.917 1v5.429C3.267 6.429 1 13.258 1 20c2.785-3.52 5.248-5.429 11.917-5.429V20L23 10.5z" />
           </svg>
