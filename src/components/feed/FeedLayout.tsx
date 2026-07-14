@@ -5,6 +5,7 @@ import MobileHeader from "./MobileHeader";
 import MobileNav from "./MobileNav";
 import LeftSidebar from "./LeftSidebar";
 import RightSidebar from "./RightSidebar";
+import ThemeToggle from "./ThemeToggle";
 
 interface FeedLayoutProps {
   children: React.ReactNode;
@@ -50,6 +51,9 @@ export default function FeedLayout({ children }: FeedLayoutProps) {
 
       {/* Mobile bottom nav */}
       <MobileNav />
+
+      {/* Theme toggle */}
+      <ThemeToggle />
     </div>
   );
 }

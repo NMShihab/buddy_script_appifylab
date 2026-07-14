@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import ThemeToggle from "../feed/ThemeToggle";
 
 interface AuthLayoutProps {
   children: React.ReactNode;
@@ -75,6 +76,8 @@ export default function AuthLayout({
           </div>
         </div>
       </div>
+
+      <ThemeToggle />
     </section>
   );
 }

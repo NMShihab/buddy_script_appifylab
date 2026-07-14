@@ -1,70 +1,16 @@
 @import "tailwindcss";
 
-/*
- * Design System Token Map
- * Source: common.css :root variables
- *
- * Original var    → Tailwind theme token         → Usage
- * --color         → --color-text-body (#2D3748)   → text-text-body
- * --color1        → --color-text-heading (#1A202C)→ text-text-heading
- * --color2        → --color-text-brown (#312000)  → text-text-brown
- * --color3        → --color-text-gray (#C4C4C4)   → text-text-gray
- * --color4        → --color-text-label (#4A5568)   → text-text-label
- * --color5        → --color-primary (#1890FF)      → bg-primary, text-primary, border-primary
- * --color6        → --color-text-dark (#212121)    → text-text-dark
- * --color7        → --color-text-muted (#666666)   → text-text-muted
- * --color8        → --color-accent (#0ACF83)       → bg-accent, text-accent
- * --color9        → --color-primary-light (#e8f4ff) → bg-primary-light
- * --bg1           → --color-surface-page (#F0F2F5) → bg-surface-page
- * --bg2           → --color-surface-card (#FFFFFF) → bg-surface-card
- * --bg3           → --color-surface-input (#F5F5F5)→ bg-surface-input
- * --bg4           → --color-border-light (#DFDFDF) → border-border-light
- * --bg5           → --color-dark-primary (#112032) → bg-dark-primary
- * --bg6           → --color-dark-secondary (#232E42) → bg-dark-secondary
- * --bcolor1       → --color-border-page (#F0F2F5)  → border-border-page
- * --bcolor2       → --color-border-input (#F5F5F5) → border-border-input
- */
-
+/* Static tokens — inlined for performance (never change with theme) */
 @theme inline {
-  /* Font */
   --font-sans: 'Poppins', sans-serif;
-
-  /* Primary & Accent */
   --color-primary: #1890FF;
   --color-primary-hover: #1478d4;
-  --color-primary-light: #e8f4ff;
   --color-accent: #0ACF83;
-
-  /* Text palette */
-  --color-text-body: #2D3748;
-  --color-text-heading: #1A202C;
-  --color-text-brown: #312000;
-  --color-text-gray: #C4C4C4;
-  --color-text-label: #4A5568;
-  --color-text-dark: #212121;
-  --color-text-muted: #666666;
-  --color-text-light: #767676;
-
-  /* Surface (backgrounds) */
-  --color-surface-page: #F0F2F5;
-  --color-surface-card: #FFFFFF;
-  --color-surface-input: #F5F5F5;
-
-  /* Dark surfaces */
   --color-dark-primary: #112032;
   --color-dark-secondary: #232E42;
-
-  /* Borders */
-  --color-border-page: #F0F2F5;
-  --color-border-input: #F5F5F5;
-  --color-border-light: #DFDFDF;
-
-  /* Shadows */
   --shadow-card: 0px 2px 4px rgba(0, 0, 0, 0.08);
   --shadow-dropdown: 0px 8px 24px rgba(149, 157, 165, 0.2);
   --shadow-hover: 0px 8px 24px rgba(149, 157, 165, 0.2);
-
-  /* Radii */
   --radius-sm: 6px;
   --radius-md: 10px;
   --radius-lg: 15px;
@@ -73,26 +19,73 @@
   --radius-full: 9999px;
 }
 
+/* Switchable tokens — use var() references so dark theme overrides work */
+@theme {
+  --color-primary-light: #e8f4ff;
+  --color-text-body: #2D3748;
+  --color-text-heading: #1A202C;
+  --color-text-brown: #312000;
+  --color-text-gray: #C4C4C4;
+  --color-text-label: #4A5568;
+  --color-text-dark: #212121;
+  --color-text-muted: #666666;
+  --color-text-light: #767676;
+  --color-surface-page: #F0F2F5;
+  --color-surface-card: #FFFFFF;
+  --color-surface-input: #F5F5F5;
+  --color-border-page: #F0F2F5;
+  --color-border-input: #F5F5F5;
+  --color-border-light: #DFDFDF;
+}
+
+/* ── Light theme (default) ── */
 :root {
-  --page-bg: var(--color-surface-page);
-  --card-bg: var(--color-surface-card);
-  --input-bg: var(--color-surface-card);
-  --input-border: var(--color-border-input);
-  --input-focus-border: var(--color-primary);
-  --divider-color: var(--color-border-light);
+  --page-bg: #F0F2F5;
+  --card-bg: #FFFFFF;
+  --input-bg: #FFFFFF;
+  --input-border: #F5F5F5;
+  --input-focus-border: #1890FF;
+  --divider-color: #DFDFDF;
   --dropdown-shadow: 0px 8px 24px rgba(149, 157, 165, 0.2);
 }
 
-/* ── Base layer ── */
+/* ── Dark theme ── */
+:root[data-theme="dark"] {
+  --color-primary-light: #1a2740;
+  --color-text-body: #c9d1d9;
+  --color-text-heading: #e6edf3;
+  --color-text-brown: #c9d1d9;
+  --color-text-gray: #4a5568;
+  --color-text-label: #8b949e;
+  --color-text-dark: #e6edf3;
+  --color-text-muted: #8b949e;
+  --color-text-light: #8b949e;
+  --color-surface-page: #112032;
+  --color-surface-card: #232E42;
+  --color-surface-input: #1a2740;
+  --color-border-page: #1a2740;
+  --color-border-input: #2d3a4f;
+  --color-border-light: #2d3a4f;
+
+  --page-bg: #112032;
+  --card-bg: #232E42;
+  --input-bg: #1a2740;
+  --input-border: #2d3a4f;
+  --input-focus-border: #1890FF;
+  --divider-color: #2d3a4f;
+  --dropdown-shadow: 0px 8px 24px rgba(0, 0, 0, 0.4);
+}
+
+/* Body (outside @layer for highest priority) */
+body {
+  background-color: var(--page-bg);
+  color: var(--color-text-body);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
 @layer base {
   html {
     scroll-behavior: smooth;
-  }
-
-  body {
-    background-color: var(--page-bg);
-    color: var(--color-text-body);
-    transition: background-color 0.2s ease, color 0.2s ease;
   }
 
   ::-webkit-scrollbar {
@@ -120,7 +113,7 @@
   }
 }
 
-/* ── Or-divider pseudo-elements (can't do in Tailwind) ── */
+/* ── Or-divider pseudo-elements ── */
 .or-divider {
   position: relative;
   text-align: center;
