@@ -1,0 +1,104 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id           String   @id @default(uuid())
+  firstName    String
+  lastName     String
+  email        String   @unique
+  passwordHash String
+  avatarUrl    String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  posts        Post[]
+  postLikes    PostLike[]
+  comments     Comment[]
+  commentLikes CommentLike[]
+
+  @@index([email], name: "idx_user_email")
+}
+
+enum Visibility {
+  PUBLIC
+  PRIVATE
+}
+
+model Post {
+  id            String     @id @default(uuid())
+  content       String
+  imageUrl      String?
+  visibility    Visibility @default(PUBLIC)
+  likesCount    Int        @default(0)
+  commentsCount Int        @default(0)
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+
+  authorId String
+  author   User   @relation(fields: [authorId], references: [id], onDelete: Cascade)
+
+  likes    PostLike[]
+  comments Comment[]
+
+  @@index([createdAt(sort: Desc), id], name: "idx_post_feed")
+  @@index([authorId, createdAt(sort: Desc)], name: "idx_post_author")
+  @@index([visibility, createdAt(sort: Desc)], name: "idx_post_visibility")
+}
+
+model PostLike {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+
+  postId String
+  post   Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([postId, userId], name: "unique_post_like")
+  @@index([postId], name: "idx_postlike_post")
+  @@index([userId, postId], name: "idx_postlike_user_post")
+}
+
+model Comment {
+  id         String   @id @default(uuid())
+  content    String
+  likesCount Int      @default(0)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  postId   String
+  post     Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  authorId String
+  author   User   @relation(fields: [authorId], references: [id], onDelete: Cascade)
+
+  parentId String?
+  parent   Comment?  @relation("CommentReplies", fields: [parentId], references: [id], onDelete: Cascade)
+  replies  Comment[] @relation("CommentReplies")
+
+  likes CommentLike[]
+
+  @@index([postId, createdAt], name: "idx_comment_post")
+  @@index([parentId, createdAt], name: "idx_comment_parent")
+}
+
+model CommentLike {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+
+  commentId String
+  comment   Comment @relation(fields: [commentId], references: [id], onDelete: Cascade)
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([commentId, userId], name: "unique_comment_like")
+  @@index([commentId], name: "idx_commentlike_comment")
+}
