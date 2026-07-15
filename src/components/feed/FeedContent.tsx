@@ -12,20 +12,6 @@ import { useInfiniteScroll } from "@/hooks/useInfiniteScroll";
 export default function FeedContent() {
   const { user, loading: authLoading } = useAuth();
   const router = useRouter();
-
-  useEffect(() => {
-    if (!authLoading && !user) {
-      router.replace("/login");
-    }
-  }, [authLoading, user, router]);
-
-  if (authLoading || !user) {
-    return (
-      <div className="flex min-h-screen items-center justify-center bg-[var(--page-bg)]">
-        <div className="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent" />
-      </div>
-    );
-  }
   const [posts, setPosts] = useState<PostData[]>([]);
   const [nextCursor, setNextCursor] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -66,9 +52,17 @@ export default function FeedContent() {
   );
 
   useEffect(() => {
-    fetchPosts();
+    if (!authLoading && !user) {
+      router.replace("/login");
+    }
+  }, [authLoading, user, router]);
+
+  useEffect(() => {
+    if (!authLoading && user) {
+      fetchPosts();
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [authLoading, user]);
 
   const loadMore = useCallback(() => {
     if (nextCursor && !loading) {
@@ -122,6 +116,14 @@ export default function FeedContent() {
       // silent fail for like toggle
     }
   };
+
+  if (authLoading || !user) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-[var(--page-bg)]">
+        <div className="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+      </div>
+    );
+  }
 
   return (
     <FeedLayout>
