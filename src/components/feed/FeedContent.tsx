@@ -1,6 +1,8 @@
 "use client";
 
 import { useState, useCallback, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { useAuth } from "@/context/AuthContext";
 import FeedLayout from "./FeedLayout";
 import StoryBar from "./StoryBar";
 import CreatePost from "./CreatePost";
@@ -8,6 +10,22 @@ import PostCard, { PostData, ReactionType } from "./PostCard";
 import { useInfiniteScroll } from "@/hooks/useInfiniteScroll";
 
 export default function FeedContent() {
+  const { user, loading: authLoading } = useAuth();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!authLoading && !user) {
+      router.replace("/login");
+    }
+  }, [authLoading, user, router]);
+
+  if (authLoading || !user) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-[var(--page-bg)]">
+        <div className="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+      </div>
+    );
+  }
   const [posts, setPosts] = useState<PostData[]>([]);
   const [nextCursor, setNextCursor] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
