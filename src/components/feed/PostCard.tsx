@@ -18,7 +18,7 @@ export type ReactionType = "LIKE" | "HAHA" | "HEART";
 export interface PostData {
   id: string;
   content: string;
-  imageUrl: string | null;
+  imageUrls: string[];
   visibility: "PUBLIC" | "PRIVATE";
   likesCount: number;
   commentsCount: number;
@@ -241,17 +241,49 @@ export default function PostCard({
         </div>
       )}
 
-      {/* Post image */}
-      {post.imageUrl && (
+      {/* Post images */}
+      {post.imageUrls.length > 0 && (
         <div className="mt-3 px-6">
-          <div className="overflow-hidden rounded-sm">
-            <Image
-              src={post.imageUrl}
-              alt="Post image"
-              width={600}
-              height={400}
-              className="h-auto w-full object-cover"
-            />
+          <div
+            className={`grid gap-1 overflow-hidden rounded-sm ${
+              post.imageUrls.length === 1
+                ? "grid-cols-1"
+                : post.imageUrls.length === 2
+                  ? "grid-cols-2"
+                  : post.imageUrls.length === 3
+                    ? "grid-cols-2"
+                    : "grid-cols-2"
+            }`}
+          >
+            {post.imageUrls.slice(0, 4).map((url, i) => (
+              <div
+                key={i}
+                className={`relative overflow-hidden ${
+                  post.imageUrls.length === 1
+                    ? ""
+                    : post.imageUrls.length === 3 && i === 0
+                      ? "row-span-2"
+                      : ""
+                }`}
+              >
+                <Image
+                  src={url}
+                  alt={`Post image ${i + 1}`}
+                  width={600}
+                  height={400}
+                  className={`w-full object-cover ${
+                    post.imageUrls.length === 1 ? "h-auto max-h-[500px]" : "h-full min-h-[150px] max-h-[250px]"
+                  }`}
+                />
+                {i === 3 && post.imageUrls.length > 4 && (
+                  <div className="absolute inset-0 flex items-center justify-center bg-black/50">
+                    <span className="text-2xl font-semibold text-white">
+                      +{post.imageUrls.length - 4}
+                    </span>
+                  </div>
+                )}
+              </div>
+            ))}
           </div>
         </div>
       )}

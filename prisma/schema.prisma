@@ -39,7 +39,7 @@ enum ReactionType {
 model Post {
   id            String     @id @default(uuid())
   content       String
-  imageUrl      String?
+  imageUrls     String[]
   visibility    Visibility @default(PUBLIC)
   likesCount    Int        @default(0)
   commentsCount Int        @default(0)

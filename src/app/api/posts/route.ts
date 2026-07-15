@@ -16,16 +16,16 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
-    const { content, imageUrl, visibility } = body;
+    const { content, imageUrls, visibility } = body;
 
-    if (!content?.trim()) {
+    if (!content?.trim() && (!imageUrls || imageUrls.length === 0)) {
       return NextResponse.json(
-        { error: "Post content is required" },
+        { error: "Post content or images required" },
         { status: 400 }
       );
     }
 
-    if (content.length > 5000) {
+    if (content && content.length > 5000) {
       return NextResponse.json(
         { error: "Post content must be under 5000 characters" },
         { status: 400 }
@@ -33,11 +33,14 @@ export async function POST(request: NextRequest) {
     }
 
     const validVisibility = visibility === "PRIVATE" ? "PRIVATE" : "PUBLIC";
+    const validImageUrls: string[] = Array.isArray(imageUrls)
+      ? imageUrls.filter((u: unknown) => typeof u === "string" && u.trim())
+      : [];
 
     const post = await prisma.post.create({
       data: {
-        content: content.trim(),
-        imageUrl: imageUrl || null,
+        content: content?.trim() || "",
+        imageUrls: validImageUrls,
         visibility: validVisibility,
         authorId: session.userId,
       },

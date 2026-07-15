@@ -4,6 +4,12 @@ import { useState, useRef } from "react";
 import Image from "next/image";
 import { useAuth } from "@/context/AuthContext";
 
+interface ImageItem {
+  preview: string;
+  url: string | null;
+  uploading: boolean;
+}
+
 interface CreatePostProps {
   onPostCreated?: () => void;
 }
@@ -11,46 +17,61 @@ interface CreatePostProps {
 export default function CreatePost({ onPostCreated }: CreatePostProps) {
   const { user } = useAuth();
   const [content, setContent] = useState("");
-  const [imageUrl, setImageUrl] = useState<string | null>(null);
-  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [images, setImages] = useState<ImageItem[]>([]);
   const [visibility, setVisibility] = useState<"PUBLIC" | "PRIVATE">("PUBLIC");
-  const [uploading, setUploading] = useState(false);
   const [posting, setPosting] = useState(false);
   const [error, setError] = useState("");
   const fileRef = useRef<HTMLInputElement>(null);
 
-  const handleImageSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    setImagePreview(URL.createObjectURL(file));
-    setUploading(true);
-    setError("");
-
-    try {
-      const formData = new FormData();
-      formData.append("file", file);
-      const res = await fetch("/api/upload", { method: "POST", body: formData });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error);
-      setImageUrl(data.url);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Upload failed");
-      setImagePreview(null);
-      setImageUrl(null);
-    } finally {
-      setUploading(false);
-    }
+  const uploadFile = async (file: File): Promise<string> => {
+    const formData = new FormData();
+    formData.append("file", file);
+    const res = await fetch("/api/upload", { method: "POST", body: formData });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error);
+    return data.url;
   };
 
-  const removeImage = () => {
-    setImageUrl(null);
-    setImagePreview(null);
+  const handleImageSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || []);
+    if (!files.length) return;
+    setError("");
+
+    const newImages: ImageItem[] = files.map((f) => ({
+      preview: URL.createObjectURL(f),
+      url: null,
+      uploading: true,
+    }));
+
+    const startIdx = images.length;
+    setImages((prev) => [...prev, ...newImages]);
+
+    for (let i = 0; i < files.length; i++) {
+      try {
+        const url = await uploadFile(files[i]);
+        setImages((prev) =>
+          prev.map((img, idx) =>
+            idx === startIdx + i ? { ...img, url, uploading: false } : img
+          )
+        );
+      } catch (err) {
+        setError(err instanceof Error ? err.message : "Upload failed");
+        setImages((prev) => prev.filter((_, idx) => idx !== startIdx + i));
+      }
+    }
+
     if (fileRef.current) fileRef.current.value = "";
   };
 
+  const removeImage = (index: number) => {
+    setImages((prev) => prev.filter((_, i) => i !== index));
+  };
+
+  const isUploading = images.some((img) => img.uploading);
+  const uploadedUrls = images.filter((img) => img.url).map((img) => img.url!);
+
   const handleSubmit = async () => {
-    if (!content.trim() && !imageUrl) return;
+    if (!content.trim() && uploadedUrls.length === 0) return;
     setPosting(true);
     setError("");
 
@@ -58,13 +79,13 @@ export default function CreatePost({ onPostCreated }: CreatePostProps) {
       const res = await fetch("/api/posts", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ content, imageUrl, visibility }),
+        body: JSON.stringify({ content, imageUrls: uploadedUrls, visibility }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error);
 
       setContent("");
-      removeImage();
+      setImages([]);
       setVisibility("PUBLIC");
       onPostCreated?.();
     } catch (err) {
@@ -104,27 +125,31 @@ export default function CreatePost({ onPostCreated }: CreatePostProps) {
         </div>
       </div>
 
-      {/* Image preview */}
-      {imagePreview && (
-        <div className="relative mb-4 overflow-hidden rounded-[6px]">
-          <Image
-            src={imagePreview}
-            alt="Preview"
-            width={500}
-            height={300}
-            className="h-auto max-h-[300px] w-full object-cover"
-          />
-          {uploading && (
-            <div className="absolute inset-0 flex items-center justify-center bg-black/30">
-              <span className="text-sm text-white">Uploading...</span>
+      {/* Image previews */}
+      {images.length > 0 && (
+        <div className="mb-4 grid grid-cols-2 gap-2 sm:grid-cols-3">
+          {images.map((img, i) => (
+            <div key={i} className="relative overflow-hidden rounded-[6px]">
+              <Image
+                src={img.preview}
+                alt={`Preview ${i + 1}`}
+                width={200}
+                height={150}
+                className="h-[120px] w-full object-cover"
+              />
+              {img.uploading && (
+                <div className="absolute inset-0 flex items-center justify-center bg-black/30">
+                  <div className="h-5 w-5 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                </div>
+              )}
+              <button
+                onClick={() => removeImage(i)}
+                className="absolute right-1 top-1 flex h-6 w-6 items-center justify-center rounded-full bg-black/50 text-xs text-white hover:bg-black/70"
+              >
+                &times;
+              </button>
             </div>
-          )}
-          <button
-            onClick={removeImage}
-            className="absolute right-2 top-2 flex h-7 w-7 items-center justify-center rounded-full bg-black/50 text-white hover:bg-black/70"
-          >
-            &times;
-          </button>
+          ))}
         </div>
       )}
 
@@ -149,6 +174,7 @@ export default function CreatePost({ onPostCreated }: CreatePostProps) {
             ref={fileRef}
             type="file"
             accept="image/*"
+            multiple
             onChange={handleImageSelect}
             className="hidden"
           />
@@ -199,7 +225,7 @@ export default function CreatePost({ onPostCreated }: CreatePostProps) {
 
           <button
             onClick={handleSubmit}
-            disabled={posting || uploading || (!content.trim() && !imageUrl)}
+            disabled={posting || isUploading || (!content.trim() && uploadedUrls.length === 0)}
             className="flex items-center gap-1.5 rounded-[6px] bg-primary px-5 py-2 text-sm font-medium text-white transition-shadow hover:shadow-hover disabled:opacity-50"
           >
             <svg xmlns="http://www.w3.org/2000/svg" width="14" height="13" fill="none" viewBox="0 0 14 13">
@@ -241,7 +267,7 @@ export default function CreatePost({ onPostCreated }: CreatePostProps) {
 
         <button
           onClick={handleSubmit}
-          disabled={posting || uploading || (!content.trim() && !imageUrl)}
+          disabled={posting || isUploading || (!content.trim() && uploadedUrls.length === 0)}
           className="flex items-center gap-1.5 rounded-[6px] bg-primary px-5 py-2 text-sm font-medium text-white transition-shadow hover:shadow-hover disabled:opacity-50"
         >
           <svg xmlns="http://www.w3.org/2000/svg" width="14" height="13" fill="none" viewBox="0 0 14 13">
